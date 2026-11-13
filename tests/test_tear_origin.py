@@ -2,8 +2,8 @@ import unittest
 
 from golded_ftn import FtnAddress
 
-from logic.tear_origin import DEFAULT_ORIGIN, tear_origin_block, with_tear_origin
-from logic.version import PRODUCT
+from golded.logic.tear_origin import DEFAULT_ORIGIN, tear_origin_block, with_tear_origin
+from golded.logic.version import PRODUCT
 
 class TearOriginTests(unittest.TestCase):
     def test_block_with_address(self):

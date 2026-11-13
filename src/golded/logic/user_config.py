@@ -5,7 +5,7 @@ from pathlib import Path
 
 from golded_ftn import FtnAddress
 
-from logic.tear_origin import DEFAULT_ORIGIN
+from golded.logic.tear_origin import DEFAULT_ORIGIN
 
 THEME_NAMES = ("dark", "light")
 DEFAULT_THEME = "dark"

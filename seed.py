@@ -7,8 +7,8 @@ from faker import Faker
 from faker.providers import BaseProvider
 from golded_ftn import FtnAddress, OutgoingMessage
 
-from data.area import Area
-from data.store import create_message_store
+from golded.data.area import Area
+from golded.data.store import create_message_store
 
 class FtnProvider(BaseProvider):
     def ftn_address(self) -> FtnAddress:
@@ -171,7 +171,7 @@ def create_message(
     )
 
 if __name__ == "__main__":
-    from app import DEFAULT_DATABASE
+    from golded.cli import DEFAULT_DATABASE
 
     target = Path(DEFAULT_DATABASE)
     seed_database(target)

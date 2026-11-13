@@ -5,13 +5,13 @@ from textual.containers import Vertical
 from textual.geometry import Size
 from textual.widgets import DataTable, Static
 
-from logic.display_text import literal_text
-from logic.thread_tree import format_branch_prefix
-from ui.list_screen import ListScreen
-from ui.message_view import MessageViewScreen
-from ui.status import StatusBar
-from ui.title import area_title_line
-from ui.write_message import open_write_screen
+from golded.logic.display_text import literal_text
+from golded.logic.thread_tree import format_branch_prefix
+from golded.ui.list_screen import ListScreen
+from golded.ui.message_view import MessageViewScreen
+from golded.ui.status import StatusBar
+from golded.ui.title import area_title_line
+from golded.ui.write_message import open_write_screen
 
 class MessageListScreen(ListScreen):
     TABLE_ID = "messages"

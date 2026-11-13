@@ -1,6 +1,6 @@
 import unittest
 
-from logic.thread_tree import build_thread_rows, format_branch_prefix
+from golded.logic.thread_tree import build_thread_rows, format_branch_prefix
 
 class FakeMessage:
     def __init__(self, msgno, reply_to_msgno = None, from_name = "") -> None:

@@ -1,6 +1,6 @@
 import unittest
 
-from logic.subject import reply_subject, subject_without_re, thread_subject
+from golded.logic.subject import reply_subject, subject_without_re, thread_subject
 
 class SubjectTests(unittest.TestCase):
     def test_subject_without_re(self):

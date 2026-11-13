@@ -1,0 +1,62 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "golded"
+version = "1.0.0"
+description = "GoldED message reader for FTN areas in SQLite, in the terminal"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Odinn Adalsteinsson"}]
+dependencies = [
+    "golded-ftn>=1.5.1,<2",
+    "golded-ftn-sqlite>=1.1.0,<2",
+    "rich>=14.2.0",
+    "textual>=8.2.8,<9",
+]
+classifiers = [
+    "Environment :: Console :: Curses",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Communications :: BBS",
+    "Typing :: Typed",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Repository = "https://github.com/golded-dev/golded-python"
+Issues = "https://github.com/golded-dev/golded-python/issues"
+Changelog = "https://github.com/golded-dev/golded-python/blob/main/CHANGELOG.md"
+
+[project.scripts]
+golded = "golded.cli:main"
+
+[dependency-groups]
+dev = [
+    "Faker>=40.43.0",
+    "pytest>=8",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/golded"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src",
+    "tests",
+    "seed.py",
+    "docs",
+    "golded.toml.example",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

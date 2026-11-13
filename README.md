@@ -2,40 +2,41 @@
 
 A message reader for FidoNet areas stored in SQLite. Terminal UI built with Textual. Storage comes from `golded-ftn` and `golded-ftn-sqlite`.
 
+## Install
+
+```bash
+uv tool install golded
+golded --help
+```
+
+Python 3.12 or newer. `golded` looks for `golded.toml` and `messages.sqlite3` in the current directory unless told otherwise (see Options).
+
 ## Layout
 
 ```
-app.py      entry point
-ui/         draws the screen and handles keys (Textual)
-logic/      selected area, current message, navigation, draft
-data/       thin edge toward the FTN packages
-seed.py     builds a reproducible test database
-tests/      unittest
+src/golded/cli.py   entry point (`golded`, `python -m golded`)
+src/golded/ui/      draws the screen and handles keys (Textual)
+src/golded/logic/   selected area, current message, navigation, draft
+src/golded/data/    thin edge toward the FTN packages
+seed.py             builds a reproducible test database
+tests/              unittest, run with pytest
 ```
 
 `ui/app.py` opens the store and hands it to a `logic` `Session`; the screens work through that session. The `golded-ftn` value types (`FtnAddress`, `OutgoingMessage`) are shared by all three layers.
 
-## Environment
+## Development
 
-Requires [uv](https://docs.astral.sh/uv/). uv fetches Python 3.14 itself if it is missing.
-
-```bash
-uv venv --python 3.14
-uv pip install -r requirements.txt
-```
-
-`requirements.txt` pins Textual 8.2.8, `golded-ftn` 1.5.1 and `golded-ftn-sqlite` 1.1.0.
-
-## Run
+Requires [uv](https://docs.astral.sh/uv/).
 
 ```bash
+uv sync
 uv run python seed.py
 cp golded.toml.example golded.toml
-uv run python app.py
-uv run python -m unittest discover -s tests
+uv run golded
+uv run pytest
 ```
 
-`seed.py` writes `messages.sqlite3` (the same default as `app.py`). **It deletes the file first if it exists, along with its `-wal` and `-shm` files**, so do not rerun it if you want to keep messages from a demo or manual test. Use `seed.py` for reproducible test data and `unittest`; for everyday use `uv run python app.py` is enough. `golded.toml` (copied from the example) points at that file and sets your From name and FTN address. Without a config the app still uses `messages.sqlite3`.
+`seed.py` writes `messages.sqlite3` (the same default as `golded`). **It deletes the file first if it exists, along with its `-wal` and `-shm` files**, so do not rerun it if you want to keep messages from a demo or manual test. `golded.toml` (copied from the example) points at that file and sets your From name and FTN address. Without a config the app still uses `messages.sqlite3`.
 
 ## Config (`golded.toml`)
 

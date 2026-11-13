@@ -9,8 +9,8 @@ from textual.containers import Horizontal, Vertical
 from textual.screen import ModalScreen, Screen
 from textual.widgets import Input, Static, TextArea
 
-from ui.status import StatusBar
-from ui.title import area_title_line
+from golded.ui.status import StatusBar
+from golded.ui.title import area_title_line
 
 def open_write_screen(app, session, callback) -> None:
     session.start_draft_message()

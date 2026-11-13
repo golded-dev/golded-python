@@ -6,7 +6,7 @@ from textual.app import ComposeResult
 from textual.containers import Horizontal
 from textual.widgets import Static
 
-from logic.version import PRODUCT, PRODUCT_NAME, VERSION
+from golded.logic.version import PRODUCT, PRODUCT_NAME, VERSION
 
 class StatusBar(Horizontal):
     DEFAULT_CSS = """

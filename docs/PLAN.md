@@ -77,6 +77,14 @@ Done when: `git log` shows one baseline commit and tests still pass.
 
 Done when: `uv sync`, `uv run golded --help` and `uv run pytest` work from a clean clone.
 
+Status 2026-11-13: done, not committed. From a copy of the tracked and new files
+without `.venv`: `uv sync --locked`, `seed.py`, `uv run golded --help` and 64 tests
+pass (63 old + version test). The tests also pass on uv-managed Python 3.12.16, and
+the wheel installs and runs `golded --help` there. A headless `run_test()` reaches
+splash → area list → message list and quits cleanly. `rich` is a direct
+dependency because `ui/area_list.py` and `logic/display_text.py` import it;
+`authors` in `pyproject.toml` follows D6.
+
 ## Phase 3 — Quality gates
 
 1. pytest runs the existing unittest suite unchanged (no rewrite to pytest style).

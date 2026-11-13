@@ -11,8 +11,8 @@ from golded_ftn_sqlite import (
     SqliteWriter,
 )
 
-from data.area import Area
-from data.store import MessageStore
+from golded.data.area import Area
+from golded.data.store import MessageStore
 
 def _to_definition(area: Area, default_origin: str | None = None) -> AreaDefinition:
     return AreaDefinition(

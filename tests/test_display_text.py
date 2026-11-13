@@ -1,6 +1,6 @@
 import unittest
 
-from logic.display_text import for_display
+from golded.logic.display_text import for_display
 
 class DisplayTextTests(unittest.TestCase):
     def test_off_returns_same_text(self):

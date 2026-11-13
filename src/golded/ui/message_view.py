@@ -6,12 +6,12 @@ from textual.containers import Horizontal, VerticalScroll
 from textual.screen import Screen
 from textual.widgets import Static
 
-from logic.display_text import for_display
-from logic.quote import has_golded_tagline, split_body_at_tagline
-from ui.pagebar import paint_pagebar
-from ui.status import StatusBar
-from ui.title import area_title_line
-from ui.write_message import open_reply_screen, open_write_screen
+from golded.logic.display_text import for_display
+from golded.logic.quote import has_golded_tagline, split_body_at_tagline
+from golded.ui.pagebar import paint_pagebar
+from golded.ui.status import StatusBar
+from golded.ui.title import area_title_line
+from golded.ui.write_message import open_reply_screen, open_write_screen
 
 class MessageViewScreen(Screen):
     DEFAULT_CSS = """

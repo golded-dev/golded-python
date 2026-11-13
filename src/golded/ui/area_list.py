@@ -6,9 +6,9 @@ from textual.app import ComposeResult
 from textual.geometry import Size
 from textual.widgets import DataTable, Static
 
-from ui.list_screen import ListScreen
-from ui.message_list import MessageListScreen
-from ui.status import StatusBar
+from golded.ui.list_screen import ListScreen
+from golded.ui.message_list import MessageListScreen
+from golded.ui.status import StatusBar
 
 class AreaListScreen(ListScreen):
     TABLE_ID = "areas"

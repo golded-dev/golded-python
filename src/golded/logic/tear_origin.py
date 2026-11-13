@@ -2,8 +2,8 @@
 
 from golded_ftn import FtnAddress
 
-from logic.quote import body_without_tearline
-from logic.version import PRODUCT
+from golded.logic.quote import body_without_tearline
+from golded.logic.version import PRODUCT
 
 DEFAULT_ORIGIN = "Where we're going, we don't need roads."
 

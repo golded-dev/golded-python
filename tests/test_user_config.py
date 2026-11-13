@@ -4,8 +4,8 @@ from pathlib import Path
 
 from golded_ftn import FtnAddress
 
-from logic.tear_origin import DEFAULT_ORIGIN
-from logic.user_config import (
+from golded.logic.tear_origin import DEFAULT_ORIGIN
+from golded.logic.user_config import (
     DEFAULT_THEME,
     DEFAULT_THREADED_LIST,
     load_user_config,

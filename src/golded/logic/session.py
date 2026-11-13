@@ -2,12 +2,12 @@
 
 from golded_ftn import OutgoingMessage
 
-from data.store import MessageStore
-from logic.quote import reply_intro
-from logic.subject import reply_subject, thread_subject
-from logic.tear_origin import with_tear_origin
-from logic.thread_tree import ThreadRow, build_thread_rows
-from logic.user_config import UserConfig
+from golded.data.store import MessageStore
+from golded.logic.quote import reply_intro
+from golded.logic.subject import reply_subject, thread_subject
+from golded.logic.tear_origin import with_tear_origin
+from golded.logic.thread_tree import ThreadRow, build_thread_rows
+from golded.logic.user_config import UserConfig
 
 class Session:
     def __init__(

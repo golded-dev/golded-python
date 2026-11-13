@@ -6,14 +6,14 @@ from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import Static
 
-from logic.version import (
+from golded.logic.version import (
     AUTHOR,
     COPYRIGHT_YEARS,
     PRODUCT,
     PRODUCT_DESCRIPTION,
     RELEASE_NAME,
 )
-from ui.logo import LOGO
+from golded.ui.logo import LOGO
 
 COUNTDOWN_SECONDS = 10
 

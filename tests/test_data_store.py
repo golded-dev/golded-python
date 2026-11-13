@@ -6,8 +6,8 @@ from pathlib import Path
 
 from golded_ftn import OutgoingMessage
 
-from data.area import Area
-from data.store import create_message_store, open_message_store
+from golded.data.area import Area
+from golded.data.store import create_message_store, open_message_store
 
 class MessageStoreTests(unittest.TestCase):
     def test_append_and_reread(self):

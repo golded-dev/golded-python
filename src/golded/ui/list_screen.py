@@ -5,8 +5,8 @@ from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import DataTable, Static
 
-from ui.pagebar import fit_list_end, paint_pagebar
-from ui.status import StatusBar
+from golded.ui.pagebar import fit_list_end, paint_pagebar
+from golded.ui.status import StatusBar
 
 class ListScreen(Screen):
     TABLE_ID = "list"

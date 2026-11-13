@@ -1,6 +1,6 @@
 import unittest
 
-from logic.quote import (
+from golded.logic.quote import (
     body_without_tearline,
     first_name,
     has_golded_tagline,

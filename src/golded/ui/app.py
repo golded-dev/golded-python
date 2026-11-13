@@ -2,15 +2,15 @@
 
 from textual.app import App
 
-from data.store import open_message_store
-from logic.session import Session
-from logic.user_config import UserConfig
-from ui.area_list import AreaListScreen
-from ui.message_list import MessageListScreen
-from ui.message_view import MessageViewScreen
-from ui.splash import SplashScreen
-from ui.theme import DEFAULT_THEME, THEMES
-from ui.write_message import WriteMessageScreen
+from golded.data.store import open_message_store
+from golded.logic.session import Session
+from golded.logic.user_config import UserConfig
+from golded.ui.area_list import AreaListScreen
+from golded.ui.message_list import MessageListScreen
+from golded.ui.message_view import MessageViewScreen
+from golded.ui.splash import SplashScreen
+from golded.ui.theme import DEFAULT_THEME, THEMES
+from golded.ui.write_message import WriteMessageScreen
 
 class GoldED(App):
     CSS = """
