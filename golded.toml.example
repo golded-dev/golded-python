@@ -1,0 +1,9 @@
+# Copy to golded.toml and edit.
+# Used when you start the app and when you write or reply.
+
+from_name = "Odinn"
+from_address = "2:236/777"
+database = "messages.sqlite3"
+origin = "Where we're going, we don't need roads."
+theme = "dark"
+threaded_list = false
