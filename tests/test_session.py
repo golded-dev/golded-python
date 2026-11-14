@@ -18,6 +18,9 @@ class SessionTests(unittest.TestCase):
         store = open_message_store(path)
         self.session = Session(store)
 
+    def tearDown(self) -> None:
+        self.__tmp.cleanup()
+
     def current(self) -> ParsedMessage:
         message = self.session.current_message()
         assert message is not None
@@ -27,9 +30,6 @@ class SessionTests(unittest.TestCase):
         message = self.session.draft_message()
         assert message is not None
         return message
-
-    def tearDown(self) -> None:
-        self.__tmp.cleanup()
 
     def test_empty_area(self) -> None:
         self.session.select_area("EMPTY")
@@ -42,9 +42,7 @@ class SessionTests(unittest.TestCase):
         self.assertEqual(len(messages), 1)
 
         self.session.select_message(messages[0].msgno)
-        current = self.current()
-        self.assertIsNotNone(current)
-        self.assertEqual(current.msgno, messages[0].msgno)
+        self.assertEqual(self.current().msgno, messages[0].msgno)
 
     def test_holes_next_previous(self) -> None:
         self.session.select_area("HOLE")
