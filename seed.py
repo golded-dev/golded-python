@@ -1,6 +1,6 @@
 """Build a fresh test database (deletes the target file and SQLite sidecars first)."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from faker import Faker
@@ -163,7 +163,7 @@ def create_message(
         from_address = fake.ftn_address()
 
     return OutgoingMessage(
-        posted_at=datetime(2026, 10, 28, 7, 9, 13, tzinfo=timezone.utc),
+        posted_at=datetime(2026, 10, 28, 7, 9, 13, tzinfo=UTC),
         from_name=from_name,
         to_name=to_name,
         subject=subject,

@@ -1,8 +1,9 @@
 import unittest
 
-from golded.logic.display_text import literal_text
 from textual.app import App, ComposeResult
 from textual.widgets import Static
+
+from golded.logic.display_text import literal_text
 
 
 class MarkupScreen(App):

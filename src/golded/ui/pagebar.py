@@ -50,9 +50,7 @@ def paint_pagebar(
     if position < 0:
         position = 0
 
-    cells = []
-    for index in range(height):
-        cells.append("track")
+    cells = ["track"] * height
 
     if height >= 2:
         cells[0] = "▲"

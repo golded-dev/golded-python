@@ -12,7 +12,8 @@ class TearOriginTests(unittest.TestCase):
         text = tear_origin_block("Where we're going, we don't need roads.", address)
         self.assertEqual(
             text,
-            f"--- {PRODUCT}\n * Origin: Where we're going, we don't need roads. (2:236/777)\n",
+            f"--- {PRODUCT}\n"
+            " * Origin: Where we're going, we don't need roads. (2:236/777)\n",
         )
 
     def test_block_without_address(self):

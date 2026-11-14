@@ -47,10 +47,10 @@ def main() -> None:
     except FileNotFoundError:
         print(f"Database not found: {database}", file=sys.stderr)
         print("Pass --database PATH or set database in golded.toml.", file=sys.stderr)
-        raise SystemExit(1)
+        raise SystemExit(1) from None
     except sqlite3.Error as error:
         print(f"Cannot open database {database}: {error}", file=sys.stderr)
-        raise SystemExit(1)
+        raise SystemExit(1) from None
 
 
 if __name__ == "__main__":
