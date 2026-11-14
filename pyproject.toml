@@ -39,7 +39,12 @@ golded = "golded.cli:main"
 [dependency-groups]
 dev = [
     "Faker>=40.43.0",
+    "build>=1.2",
+    "hatchling>=1.26",
+    "mypy>=1.15",
     "pytest>=8",
+    "ruff>=0.11",
+    "twine>=6",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -56,6 +61,16 @@ include = [
     "LICENSE",
     "pyproject.toml",
 ]
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests", "seed.py"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
