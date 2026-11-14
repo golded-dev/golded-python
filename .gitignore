@@ -4,3 +4,7 @@ __pycache__/
 *.sqlite3-shm
 golded.toml
 .venv/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

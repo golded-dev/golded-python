@@ -103,6 +103,21 @@ dependency because `ui/area_list.py` and `logic/display_text.py` import it;
 
 Done when: all gates pass locally on 3.12 and 3.14.
 
+Status 2026-11-14: done. Ruff lint and format, strict mypy (42 files), 71 tests
+and `scripts/verify_distribution.py` pass on 3.14 and, in a clean copy, on
+uv-managed 3.12.16. CI is written but has not run on GitHub; `actionlint` is not
+installed here, so the workflow is checked only by running its steps locally.
+
+Found on the way, recorded for Phase 4:
+
+- `q` does not quit from the area list (filter letter) or the write screen
+  (text). The README now says so; behaviour is unchanged.
+- `ListScreen.on_scroll` never ran (Textual has no `Scroll` message) and was
+  deleted. Whether the pagebar follows mouse-wheel scrolling in lists needs a
+  manual check.
+- Reply drafts passed the sender address as text where `OutgoingMessage`
+  expects `FtnAddress`; it now parses it. The stored value is unchanged.
+
 ## Phase 4 — Code review pass (no features)
 
 1. Search for course leftovers: Danish strings in UI/comments/docstrings,

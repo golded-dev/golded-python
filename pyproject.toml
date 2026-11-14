@@ -55,6 +55,7 @@ include = [
     "src",
     "tests",
     "seed.py",
+    "scripts",
     "docs",
     "golded.toml.example",
     "README.md",
@@ -70,7 +71,7 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.mypy]
 strict = true
-files = ["src", "tests", "seed.py"]
+files = ["src", "tests", "scripts", "seed.py"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
