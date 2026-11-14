@@ -1,8 +1,9 @@
 """SQLite message store."""
 
+from collections.abc import Sequence
 from pathlib import Path
 
-from golded_ftn import OutgoingMessage, ParsedMessage
+from golded_ftn import FtnAddress, OutgoingMessage, ParsedMessage
 from golded_ftn_sqlite import (
     AreaDefinition,
     AreaKind,
@@ -15,7 +16,9 @@ from golded.data.area import Area
 from golded.data.store import MessageStore
 
 
-def _to_definition(area: Area, default_origin: str | None = None) -> AreaDefinition:
+def _to_definition(
+    area: Area, default_origin: FtnAddress | None = None
+) -> AreaDefinition:
     return AreaDefinition(
         code=area.code,
         name=area.name,
@@ -68,11 +71,15 @@ class SqliteMessageStore(MessageStore):
             session.delete(stored.identity, stored.revision)
 
 
-def open_message_store(path) -> SqliteMessageStore:
+def open_message_store(path: str | Path) -> SqliteMessageStore:
     return SqliteMessageStore(Path(path).resolve())
 
 
-def create_message_store(path, areas, default_origin=None) -> SqliteMessageStore:
+def create_message_store(
+    path: str | Path,
+    areas: Sequence[Area],
+    default_origin: FtnAddress | None = None,
+) -> SqliteMessageStore:
     if len(areas) == 0:
         raise ValueError("at least one area is required")
 

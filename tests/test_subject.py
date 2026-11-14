@@ -4,15 +4,15 @@ from golded.logic.subject import reply_subject, subject_without_re, thread_subje
 
 
 class SubjectTests(unittest.TestCase):
-    def test_subject_without_re(self):
+    def test_subject_without_re(self) -> None:
         self.assertEqual(subject_without_re("Re: Hello"), "Hello")
         self.assertEqual(subject_without_re("re: re: Hello"), "Hello")
         self.assertEqual(subject_without_re("Hello"), "Hello")
 
-    def test_thread_subject(self):
+    def test_thread_subject(self) -> None:
         self.assertEqual(thread_subject("Re: Hello"), "hello")
 
-    def test_reply_subject(self):
+    def test_reply_subject(self) -> None:
         self.assertEqual(reply_subject("Hello"), "Re: Hello")
         self.assertEqual(reply_subject("re: re: Hello"), "Re: Hello")
 

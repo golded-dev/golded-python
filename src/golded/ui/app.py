@@ -13,7 +13,7 @@ from golded.ui.theme import DEFAULT_THEME, THEMES
 from golded.ui.write_message import WriteMessageScreen
 
 
-class GoldED(App):
+class GoldED(App[None]):
     CSS = """
     Screen {
         background: $ged-bg;
@@ -103,7 +103,7 @@ class GoldED(App):
         ("f9", "toggle_theme", "Theme"),
     ]
 
-    def __init__(self, session, theme_name: str = DEFAULT_THEME) -> None:
+    def __init__(self, session: Session, theme_name: str = DEFAULT_THEME) -> None:
         super().__init__()
         self.__session = session
 
@@ -112,13 +112,8 @@ class GoldED(App):
 
         self.theme = theme_name
 
-    def get_theme_variable_defaults(self) -> dict:
+    def get_theme_variable_defaults(self) -> dict[str, str]:
         return dict(THEMES[0].variables)
-
-    def ged_color(self, name: str) -> str:
-        theme = self.get_theme(self.theme)
-
-        return theme.variables[f"ged-{name}"]
 
     def on_mount(self) -> None:
         self.push_screen(AreaListScreen(self.__session))

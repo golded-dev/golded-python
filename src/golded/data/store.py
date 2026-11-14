@@ -1,8 +1,10 @@
 """Message store ABC and open/create entry points; implementation in sqlite_store."""
 
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
+from pathlib import Path
 
-from golded_ftn import OutgoingMessage, ParsedMessage
+from golded_ftn import FtnAddress, OutgoingMessage, ParsedMessage
 
 from golded.data.area import Area
 
@@ -29,16 +31,16 @@ class MessageStore(ABC):
         pass
 
 
-def open_message_store(path: str) -> MessageStore:
+def open_message_store(path: str | Path) -> MessageStore:
     from golded.data.sqlite_store import open_message_store as open_store
 
     return open_store(path)
 
 
 def create_message_store(
-    path: str,
-    areas: list[Area],
-    default_origin: str | None = None,
+    path: str | Path,
+    areas: Sequence[Area],
+    default_origin: FtnAddress | None = None,
 ) -> MessageStore:
     from golded.data.sqlite_store import create_message_store as create_store
 

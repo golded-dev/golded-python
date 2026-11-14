@@ -6,10 +6,12 @@ from textual.geometry import Size
 from textual.widgets import DataTable, Static
 
 from golded.logic.display_text import literal_text
+from golded.logic.session import Session
 from golded.logic.thread_tree import format_branch_prefix
 from golded.ui.list_screen import ListScreen
 from golded.ui.message_view import MessageViewScreen
 from golded.ui.status import StatusBar
+from golded.ui.theme import ged_color
 from golded.ui.title import area_title_line
 from golded.ui.write_message import open_write_screen
 
@@ -107,7 +109,7 @@ class MessageListScreen(ListScreen):
         ("shift+space", "page_up", "Page up"),
     ]
 
-    def __init__(self, session) -> None:
+    def __init__(self, session: Session) -> None:
         super().__init__()
         self.__session = session
 
@@ -147,7 +149,7 @@ class MessageListScreen(ListScreen):
         if current is not None:
             self.select_msgno(current)
 
-    def after_message_view(self, result=None) -> None:
+    def after_message_view(self, result: int | None = None) -> None:
         if result is not None:
             self.reload_messages()
             self.__session.select_message(result)
@@ -162,7 +164,7 @@ class MessageListScreen(ListScreen):
         self.update_subject_line()
         self.sync_pagebar()
 
-    def after_write(self, result=None) -> None:
+    def after_write(self, result: int | None = None) -> None:
         self.reload_messages()
 
         if result is not None:
@@ -238,12 +240,13 @@ class MessageListScreen(ListScreen):
 
     def show_title(self) -> None:
         area_code = self.__session.selected_area()
+        assert area_code is not None, "message list without a selected area"
         title = area_title_line(
             self.__session.area_name(area_code),
             area_code,
             self.size.width,
-            self.app.ged_color("line"),
-            self.app.ged_color("title"),
+            ged_color(self.app, "line"),
+            ged_color(self.app, "title"),
         )
         self.query_one("#title", Static).update(title)
 

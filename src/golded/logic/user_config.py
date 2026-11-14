@@ -30,7 +30,7 @@ class UserConfig:
         self.threaded_list = bool(threaded_list)
 
 
-def load_user_config(path) -> UserConfig:
+def load_user_config(path: str | Path) -> UserConfig:
     config_path = Path(path)
 
     if not config_path.is_file():

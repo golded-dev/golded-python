@@ -6,7 +6,7 @@ from textual.widgets import Static
 from golded.logic.display_text import literal_text
 
 
-class MarkupScreen(App):
+class MarkupScreen(App[None]):
     def compose(self) -> ComposeResult:
         yield Static("", id="meta", markup=False)
         yield Static("", id="body", markup=False)

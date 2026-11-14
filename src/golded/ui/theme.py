@@ -1,5 +1,8 @@
 """GoldED colour themes (IBM VGA names, hex as in DOS text mode)."""
 
+from typing import Any
+
+from textual.app import App
 from textual.theme import Theme
 
 BLACK = "#000000"
@@ -77,3 +80,10 @@ LIGHT = Theme(
 
 THEMES = (DARK, LIGHT)
 DEFAULT_THEME = DARK.name
+
+
+def ged_color(app: App[Any], name: str) -> str:
+    theme = app.get_theme(app.theme)
+    assert theme is not None, f"theme {app.theme!r} is not registered"
+
+    return theme.variables[f"ged-{name}"]

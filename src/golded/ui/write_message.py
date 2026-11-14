@@ -1,19 +1,25 @@
 """Compose and save a new or reply message."""
 
+from collections.abc import Callable
 from datetime import datetime
+from typing import Any
 
 from golded_ftn import FtnAddress, OutgoingMessage
-from textual.app import ComposeResult
+from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.screen import ModalScreen, Screen
 from textual.widgets import Input, Static, TextArea
 
+from golded.logic.session import Session
 from golded.ui.status import StatusBar
+from golded.ui.theme import ged_color
 from golded.ui.title import area_title_line
 
 
-def open_write_screen(app, session, callback) -> None:
+def open_write_screen(
+    app: App[Any], session: Session, callback: Callable[[int | None], None]
+) -> None:
     session.start_draft_message()
 
     if session.draft_message() is None:
@@ -23,10 +29,10 @@ def open_write_screen(app, session, callback) -> None:
 
 
 def open_reply_screen(
-    app,
-    session,
+    app: App[Any],
+    session: Session,
     body_for_quote: str,
-    callback,
+    callback: Callable[[int | None], None],
     subject_for_reply: str | None = None,
 ) -> None:
     session.start_reply_draft(body_for_quote, subject_for_reply)
@@ -91,7 +97,7 @@ class DiscardDialog(ModalScreen[bool]):
         self.dismiss(False)
 
 
-class WriteMessageScreen(Screen):
+class WriteMessageScreen(Screen[int | None]):
     AUTO_FOCUS = "#subject"
 
     DEFAULT_CSS = """
@@ -216,7 +222,7 @@ class WriteMessageScreen(Screen):
         Binding("down", "focus_down", "Down", priority=True),
     ]
 
-    def __init__(self, session) -> None:
+    def __init__(self, session: Session) -> None:
         super().__init__()
         self.__session = session
 
@@ -274,18 +280,19 @@ class WriteMessageScreen(Screen):
         area_code = self.__session.draft_area()
         if area_code is None:
             area_code = self.__session.selected_area()
+        assert area_code is not None, "write screen without an area"
 
         width = self.size.width
         if width < 40:
             width = 80
 
-        line = self.app.ged_color("line")
+        line = ged_color(self.app, "line")
         title = area_title_line(
             self.__session.area_name(area_code),
             area_code,
             width,
             line,
-            self.app.ged_color("title"),
+            ged_color(self.app, "title"),
         )
         self.query_one("#title", Static).update(title)
 

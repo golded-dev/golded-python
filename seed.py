@@ -25,7 +25,7 @@ class FtnProvider(BaseProvider):
         )
 
 
-def seed_database(path) -> Path:
+def seed_database(path: str | Path) -> Path:
     path = Path(path)
 
     for candidate in (

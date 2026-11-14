@@ -11,7 +11,7 @@ from golded.data.store import create_message_store, open_message_store
 
 
 class MessageStoreTests(unittest.TestCase):
-    def test_append_and_reread(self):
+    def test_append_and_reread(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "test.sqlite3"
             store = create_message_store(

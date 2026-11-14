@@ -1,8 +1,14 @@
 """Build a flat message list in depth-first thread order."""
 
+from collections.abc import Sequence
+
+from golded_ftn import ParsedMessage
+
 
 class ThreadRow:
-    def __init__(self, message, branch_path: list[bool], broken: bool = False) -> None:
+    def __init__(
+        self, message: ParsedMessage, branch_path: list[bool], broken: bool = False
+    ) -> None:
         self.message = message
         self.branch_path = branch_path
         self.broken = broken
@@ -31,13 +37,13 @@ def format_branch_prefix(branch_path: list[bool]) -> str:
     return "".join(parts)
 
 
-def build_thread_rows(messages: list) -> list[ThreadRow]:
-    by_msgno = {}
+def build_thread_rows(messages: Sequence[ParsedMessage]) -> list[ThreadRow]:
+    by_msgno: dict[int, ParsedMessage] = {}
     for message in messages:
         by_msgno[message.msgno] = message
 
-    roots = []
-    replies_by_msgno = {}
+    roots: list[ParsedMessage] = []
+    replies_by_msgno: dict[int, list[ParsedMessage]] = {}
 
     for message in messages:
         parent = message.reply_to_msgno
@@ -50,8 +56,8 @@ def build_thread_rows(messages: list) -> list[ThreadRow]:
 
         replies_by_msgno[parent].append(message)
 
-    rows = []
-    visited = set()
+    rows: list[ThreadRow] = []
+    visited: set[int] = set()
 
     for root in roots:
         _walk_thread(root, [], replies_by_msgno, rows, visited, False)
@@ -66,9 +72,9 @@ def build_thread_rows(messages: list) -> list[ThreadRow]:
 
 
 def _walk_thread(
-    root,
+    root: ParsedMessage,
     start_path: list[bool],
-    replies_by_msgno: dict[int, list],
+    replies_by_msgno: dict[int, list[ParsedMessage]],
     rows: list[ThreadRow],
     visited: set[int],
     broken: bool,
@@ -84,7 +90,7 @@ def _walk_thread(
         visited.add(message.msgno)
         rows.append(ThreadRow(message, branch_path, is_broken))
 
-        replies = []
+        replies: list[ParsedMessage] = []
         if message.msgno in replies_by_msgno:
             replies = replies_by_msgno[message.msgno]
 

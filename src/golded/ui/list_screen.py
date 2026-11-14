@@ -1,5 +1,7 @@
 """Shared DataTable list frame with GoldED pagebar."""
 
+from typing import Any
+
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
@@ -7,13 +9,14 @@ from textual.widgets import DataTable, Static
 
 from golded.ui.pagebar import fit_list_end, paint_pagebar
 from golded.ui.status import StatusBar
+from golded.ui.theme import ged_color
 
 
-class ListScreen(Screen):
+class ListScreen(Screen[None]):
     TABLE_ID = "list"
     PAGEBAR_BORDER = "border"
 
-    def table(self) -> DataTable:
+    def table(self) -> DataTable[Any]:
         return self.query_one(f"#{self.TABLE_ID}", DataTable)
 
     def action_page_down(self) -> None:
@@ -50,8 +53,8 @@ class ListScreen(Screen):
             table.row_count,
             table.size.height,
             int(table.scroll_y),
-            self.app.ged_color(self.PAGEBAR_BORDER),
-            self.app.ged_color("status-fg"),
+            ged_color(self.app, self.PAGEBAR_BORDER),
+            ged_color(self.app, "status-fg"),
         )
 
     def fit_list_end(self) -> None:
@@ -61,7 +64,3 @@ class ListScreen(Screen):
             self.query_one("#list-end", Static),
             self.query_one("#list-pad", Static),
         )
-
-    def on_scroll(self, event) -> None:
-        if event.node.id == self.TABLE_ID:
-            self.sync_pagebar()

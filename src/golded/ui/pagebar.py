@@ -1,11 +1,13 @@
 """GoldED-style pagebar (scrollbar in the right border column)."""
 
+from typing import Any
+
 from textual.containers import Vertical
 from textual.widgets import DataTable, Static
 
 
 def fit_list_end(
-    table: DataTable,
+    table: DataTable[Any],
     main: Vertical,
     end: Static,
     pad: Static,

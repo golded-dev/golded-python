@@ -1,5 +1,6 @@
 """One message, scrollable."""
 
+from golded_ftn import ParsedMessage
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, VerticalScroll
@@ -8,13 +9,15 @@ from textual.widgets import Static
 
 from golded.logic.display_text import for_display
 from golded.logic.quote import has_golded_tagline, split_body_at_tagline
+from golded.logic.session import Session
 from golded.ui.pagebar import paint_pagebar
 from golded.ui.status import StatusBar
+from golded.ui.theme import ged_color
 from golded.ui.title import area_title_line
 from golded.ui.write_message import open_reply_screen, open_write_screen
 
 
-class MessageViewScreen(Screen):
+class MessageViewScreen(Screen[int | None]):
     DEFAULT_CSS = """
     MessageViewScreen {
         background: $ged-bg;
@@ -92,7 +95,7 @@ class MessageViewScreen(Screen):
         ("r", "reply_message", "Reply"),
     ]
 
-    def __init__(self, session) -> None:
+    def __init__(self, session: Session) -> None:
         super().__init__()
         self.__session = session
         self.__repair_mojibake = False
@@ -119,7 +122,7 @@ class MessageViewScreen(Screen):
             subject,
         )
 
-    def after_write(self, result=None) -> None:
+    def after_write(self, result: int | None = None) -> None:
         if result is None:
             self.show_current_message()
             return
@@ -182,7 +185,7 @@ class MessageViewScreen(Screen):
         self.show_current_message()
         self.sync_pagebar()
 
-    def on_body_scroll_y(self, old_value, new_value) -> None:
+    def on_body_scroll_y(self, old_value: float, new_value: float) -> None:
         self.sync_pagebar()
 
     def sync_pagebar(self) -> None:
@@ -192,8 +195,8 @@ class MessageViewScreen(Screen):
             body.virtual_size.height,
             body.size.height,
             int(body.scroll_y),
-            self.app.ged_color("border"),
-            self.app.ged_color("status-fg"),
+            ged_color(self.app, "border"),
+            ged_color(self.app, "status-fg"),
         )
 
     def show_current_message(self) -> None:
@@ -215,19 +218,21 @@ class MessageViewScreen(Screen):
 
     def show_title(self, width: int) -> None:
         area_code = self.__session.selected_area()
+        assert area_code is not None, "message view without a selected area"
         title = area_title_line(
             self.__session.area_name(area_code),
             area_code,
             width,
-            self.app.ged_color("line"),
-            self.app.ged_color("title"),
+            ged_color(self.app, "line"),
+            ged_color(self.app, "title"),
         )
         self.query_one("#title", Static).update(title)
 
-    def show_meta(self, message, width: int) -> None:
+    def show_meta(self, message: ParsedMessage, width: int) -> None:
         messages = self.__session.messages()
         total = len(messages)
         index = self.__session.current_message_index()
+        assert index is not None, "message view without a current message"
         position = index + 1
 
         repair = self.__repair_mojibake
@@ -236,8 +241,13 @@ class MessageViewScreen(Screen):
         subject = for_display(message.subject, repair)
 
         from_address = self.display_address(message.from_address)
-        if from_address == "" and message.control_lines.origin_address is not None:
-            from_address = str(message.control_lines.origin_address)
+        controls = message.control_lines
+        if (
+            from_address == ""
+            and controls is not None
+            and controls.origin_address is not None
+        ):
+            from_address = str(controls.origin_address)
 
         to_address = self.display_address(message.to_address)
 
@@ -253,28 +263,29 @@ class MessageViewScreen(Screen):
         )
         self.query_one("#meta", Static).update(meta)
 
-    def show_separator(self, message, width: int) -> None:
+    def show_separator(self, message: ParsedMessage, width: int) -> None:
         size = len(message.body_text.encode("utf-8"))
         size_text = str(size)
         after = width - 1 - len(size_text)
         if after < 8:
             after = 8
 
-        line = self.app.ged_color("line")
-        title_color = self.app.ged_color("title")
+        line = ged_color(self.app, "line")
+        title_color = ged_color(self.app, "title")
         sep = f"[{line}]─[/][{title_color}]{size_text}[/][{line}]{'─' * after}[/]"
         self.query_one("#sep", Static).update(sep)
 
-    def show_body(self, message) -> None:
+    def show_body(self, message: ParsedMessage) -> None:
         body_text = for_display(message.body_text, self.__repair_mojibake)
         main_text, tag_text = split_body_at_tagline(body_text)
         self.query_one("#body-main", Static).update(main_text)
         self.query_one("#body-tag", Static).update(tag_text)
 
-    def show_status(self, message) -> None:
+    def show_status(self, message: ParsedMessage) -> None:
         messages = self.__session.messages()
         total = len(messages)
         index = self.__session.current_message_index()
+        assert index is not None, "message view without a current message"
         position = index + 1
         left = total - position
 
@@ -286,7 +297,7 @@ class MessageViewScreen(Screen):
         status_bar.set_middle(status)
         status_bar.set_product(squared=has_golded_tagline(message.body_text))
 
-    def display_address(self, address) -> str:
+    def display_address(self, address: str | None) -> str:
         if address is None:
             return ""
 

@@ -1,7 +1,8 @@
 """Selected area, current message and draft."""
 
-from golded_ftn import OutgoingMessage
+from golded_ftn import FtnAddress, OutgoingMessage, ParsedMessage
 
+from golded.data.area import Area
 from golded.data.store import MessageStore
 from golded.logic.quote import reply_intro
 from golded.logic.subject import reply_subject, thread_subject
@@ -18,34 +19,34 @@ class Session:
     ) -> None:
         self.__store = store
         self.__user = UserConfig() if user_config is None else user_config
-        self.__selected_area = None
-        self.__current_message_index = None
-        self.__draft_message = None
-        self.__draft_area = None
+        self.__selected_area: str | None = None
+        self.__current_message_index: int | None = None
+        self.__draft_message: OutgoingMessage | None = None
+        self.__draft_area: str | None = None
         self.__threaded_list = self.__user.threaded_list
-        self.__message_rows_cache = None
-        self.__cache_area = None
-        self.__cache_threaded = None
+        self.__message_rows_cache: list[ThreadRow] | None = None
+        self.__cache_area: str | None = None
+        self.__cache_threaded: bool | None = None
 
     def __clear_message_cache(self) -> None:
         self.__message_rows_cache = None
 
-    def areas(self):
+    def areas(self) -> tuple[Area, ...]:
         return self.__store.areas()
 
-    def selected_area(self):
+    def selected_area(self) -> str | None:
         return self.__selected_area
 
-    def current_message_index(self):
+    def current_message_index(self) -> int | None:
         return self.__current_message_index
 
     def message_count(self, area: str) -> int:
         return len(self.__store.messages(area))
 
-    def draft_message(self):
+    def draft_message(self) -> OutgoingMessage | None:
         return self.__draft_message
 
-    def draft_area(self):
+    def draft_area(self) -> str | None:
         return self.__draft_area
 
     def threaded_list(self) -> bool:
@@ -69,7 +70,7 @@ class Session:
         self.__current_message_index = None
         self.__clear_message_cache()
 
-    def message_rows(self) -> list:
+    def message_rows(self) -> list[ThreadRow]:
         if self.__selected_area is None:
             return []
 
@@ -95,7 +96,7 @@ class Session:
 
         return rows
 
-    def messages(self):
+    def messages(self) -> tuple[ParsedMessage, ...]:
         rows = self.message_rows()
         result = []
         for row in rows:
@@ -113,7 +114,7 @@ class Session:
 
         self.__current_message_index = None
 
-    def current_message(self):
+    def current_message(self) -> ParsedMessage | None:
         if self.__current_message_index is None:
             return None
 
@@ -226,6 +227,12 @@ class Session:
 
         self.__draft_area = self.__selected_area
 
+        # The reader returns addresses as text; the writer stores str(FtnAddress),
+        # so parsing it back gives the same address.
+        to_address = None
+        if message.from_address is not None:
+            to_address = FtnAddress.from_string(message.from_address)
+
         self.__draft_message = OutgoingMessage(
             from_name=self.__user.from_name,
             to_name=message.from_name,
@@ -237,7 +244,7 @@ class Session:
             ),
             reply_to_msgno=message.msgno,
             from_address=self.__user.from_address,
-            to_address=message.from_address,
+            to_address=to_address,
         )
 
     def set_draft_message(self, message: OutgoingMessage) -> None:

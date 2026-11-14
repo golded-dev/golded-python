@@ -6,6 +6,7 @@ from textual.app import ComposeResult
 from textual.geometry import Size
 from textual.widgets import DataTable, Static
 
+from golded.logic.session import Session
 from golded.ui.list_screen import ListScreen
 from golded.ui.message_list import MessageListScreen
 from golded.ui.status import StatusBar
@@ -99,11 +100,11 @@ class AreaListScreen(ListScreen):
         ("shift+space", "page_up", "Page up"),
     ]
 
-    def __init__(self, session) -> None:
+    def __init__(self, session: Session) -> None:
         super().__init__()
         self.__session = session
         self.__filter = ""
-        self.__rows = []
+        self.__rows: list[tuple[int, str, int, str]] = []
 
     def compose(self) -> ComposeResult:
         yield from self.compose_list(title_markup=False)

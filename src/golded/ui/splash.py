@@ -33,7 +33,7 @@ LICENSE_TEXT = (
 )
 
 
-class SplashScreen(Screen):
+class SplashScreen(Screen[None]):
     DEFAULT_CSS = """
     SplashScreen {
         align: center middle;
