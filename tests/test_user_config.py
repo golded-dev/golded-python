@@ -43,13 +43,19 @@ class UserConfigTests(unittest.TestCase):
         self.assertEqual(config.theme, "light")
         self.assertTrue(config.threaded_list)
 
-    def test_unknown_theme_falls_back(self) -> None:
+    def load_text(self, text: str) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "golded.toml"
-            path.write_text('theme = "neon"\n', encoding="utf-8")
-            config = load_user_config(path)
+            path.write_text(text, encoding="utf-8")
+            load_user_config(path)
 
-        self.assertEqual(config.theme, DEFAULT_THEME)
+    def test_unknown_theme_is_an_error(self) -> None:
+        with self.assertRaisesRegex(ValueError, "theme must be one of dark, light"):
+            self.load_text('theme = "neon"\n')
+
+    def test_threaded_list_must_be_boolean(self) -> None:
+        with self.assertRaisesRegex(ValueError, "threaded_list must be true or false"):
+            self.load_text('threaded_list = "no"\n')
 
 
 if __name__ == "__main__":

@@ -135,8 +135,9 @@ Found on the way, recorded for Phase 4:
 Status 2026-11-14: steps 1, 2 and 4 done; step 3 (manual terminals) is open.
 Fixed: unsupported database schema, malformed `golded.toml` and invalid
 `from_address` gave tracebacks and now give one line and exit 1; the list
-pagebar now follows mouse-wheel scrolling. Open for a decision: `threaded_list`
-accepts any string as `true`, and an unknown `theme` falls back silently.
+pagebar now follows mouse-wheel scrolling. A non-boolean `threaded_list` and an
+unknown `theme` were accepted silently and are now config errors (decided
+2026-11-14).
 
 ## Phase 5 — HTML manual
 

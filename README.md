@@ -51,7 +51,7 @@ theme = "dark"
 threaded_list = false
 ```
 
-`from_name` and `from_address` are filled in automatically when you write or reply. `origin` becomes ` * Origin: …` below the tearline; the default is Doc Brown's "Where we're going, we don't need roads." `theme` is `dark` or `light` (default `dark`). `threaded_list` starts the message list as a thread tree (`true`) or flat (`false`, default); `t` still toggles it inside the app. Product name and version are constants in the code. `--database` and `--theme` on the command line override the config.
+`from_name` and `from_address` are filled in automatically when you write or reply. `origin` becomes ` * Origin: …` below the tearline; the default is Doc Brown's "Where we're going, we don't need roads." `theme` is `dark` or `light` (default `dark`). `threaded_list` starts the message list as a thread tree (`true`) or flat (`false`, default); `t` still toggles it inside the app. An unknown `theme`, or a `threaded_list` that is not a TOML boolean (`"no"` is a string), stops `golded` at startup with an error. Product name and version are constants in the code. `--database` and `--theme` on the command line override the config.
 
 ## Options
 

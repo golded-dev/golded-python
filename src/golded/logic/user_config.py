@@ -46,6 +46,14 @@ def load_user_config(path: str | Path) -> UserConfig:
     threaded_list = data.get("threaded_list", DEFAULT_THREADED_LIST)
     from_address = None
 
+    if theme not in THEME_NAMES:
+        raise ValueError(
+            f"theme must be one of {', '.join(THEME_NAMES)}, not {theme!r}"
+        )
+
+    if not isinstance(threaded_list, bool):
+        raise ValueError(f"threaded_list must be true or false, not {threaded_list!r}")
+
     address_text = str(data.get("from_address", "")).strip()
     if address_text != "":
         from_address = FtnAddress.from_string(address_text)
@@ -56,5 +64,5 @@ def load_user_config(path: str | Path) -> UserConfig:
         database=database,
         origin=origin,
         theme=theme,
-        threaded_list=bool(threaded_list),
+        threaded_list=threaded_list,
     )

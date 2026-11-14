@@ -33,11 +33,11 @@ Covered by `tests/test_cli.py` except where noted.
 | Malformed `golded.toml` | traceback (`TOMLDecodeError`), exit 1 | `Cannot read config …: Illegal character …`, exit 1 |
 | Invalid `from_address` | traceback (`ValueError`), exit 1 | `Cannot read config …: Invalid FTN address [nonsense].`, exit 1 |
 | `--config` names a directory | ignored, defaults used | unchanged |
+| `threaded_list = "no"` | read with `bool()`, so any non-empty string meant `true` | `Cannot read config …: threaded_list must be true or false, not 'no'`, exit 1 |
+| `theme = "neon"` | fell back to `dark` without a message | `Cannot read config …: theme must be one of dark, light, not 'neon'`, exit 1 |
 
-Not changed, open for a decision (invalid input that is accepted silently):
-
-- `threaded_list = "no"` is read with `bool()`, so any non-empty string means `true`.
-- An unknown `theme` in `golded.toml` falls back to `dark` without a message.
+The last two were accepted silently before; Odinn decided on 2026-11-14 that they
+are errors. Covered by `tests/test_user_config.py`.
 
 ## Pagebar and mouse wheel (2026-11-14)
 
