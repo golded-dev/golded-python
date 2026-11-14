@@ -69,7 +69,7 @@ threaded_list = false
 
 | Key | Action |
 | --- | --- |
-| `q` | Quit the app |
+| `q` | Quit the app (message list and message view; in the area list letters filter, and in the write screen they are text) |
 | `Esc` | Back one screen; quits from the area list |
 | `F9` | Toggle theme |
 
