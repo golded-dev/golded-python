@@ -2,6 +2,7 @@ import argparse
 import sqlite3
 import sys
 
+from golded.data.store import open_message_store
 from golded.logic.user_config import THEME_NAMES, load_user_config
 from golded.ui.app import run
 
@@ -31,7 +32,11 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    user_config = load_user_config(args.config)
+    try:
+        user_config = load_user_config(args.config)
+    except (OSError, ValueError) as error:
+        print(f"Cannot read config {args.config}: {error}", file=sys.stderr)
+        raise SystemExit(1) from None
 
     if args.database is None:
         database = (
@@ -43,14 +48,17 @@ def main() -> None:
     theme = user_config.theme if args.theme is None else args.theme
 
     try:
-        run(database, theme, user_config)
+        store = open_message_store(database)
     except FileNotFoundError:
         print(f"Database not found: {database}", file=sys.stderr)
         print("Pass --database PATH or set database in golded.toml.", file=sys.stderr)
         raise SystemExit(1) from None
-    except sqlite3.Error as error:
+    except (sqlite3.Error, ValueError) as error:
+        # golded-ftn-sqlite raises ValueError for a foreign or unsupported schema.
         print(f"Cannot open database {database}: {error}", file=sys.stderr)
         raise SystemExit(1) from None
+
+    run(store, theme, user_config)
 
 
 if __name__ == "__main__":

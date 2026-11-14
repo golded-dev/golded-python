@@ -2,7 +2,7 @@
 
 from textual.app import App
 
-from golded.data.store import open_message_store
+from golded.data.store import MessageStore
 from golded.logic.session import Session
 from golded.logic.user_config import UserConfig
 from golded.ui.area_list import AreaListScreen
@@ -139,10 +139,9 @@ class GoldED(App[None]):
 
 
 def run(
-    database_path: str = "messages.sqlite3",
+    store: MessageStore,
     theme_name: str = DEFAULT_THEME,
     user_config: UserConfig | None = None,
 ) -> None:
-    store = open_message_store(database_path)
     session = Session(store, user_config)
     GoldED(session, theme_name).run()

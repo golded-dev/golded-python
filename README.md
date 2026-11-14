@@ -22,7 +22,7 @@ seed.py             builds a reproducible test database
 tests/              unittest, run with pytest
 ```
 
-`ui/app.py` opens the store and hands it to a `logic` `Session`; the screens work through that session. The `golded-ftn` value types (`FtnAddress`, `OutgoingMessage`) are shared by all three layers.
+`cli.py` opens the store and hands it to `ui/app.py`, which wraps it in a `logic` `Session`; the screens work through that session. The `golded-ftn` value types (`FtnAddress`, `OutgoingMessage`) are shared by all three layers.
 
 ## Development
 
