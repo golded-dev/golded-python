@@ -164,6 +164,15 @@ JavaScript, readable without it, local assets only.
 6. In `golded-ftn-python-docs`: link to the manual from the home page. Separate
    repo, separate commit.
 
+Status 2026-11-14: steps 1–5 done; step 6 waits for Phase 8.7, since the link
+would point at a page that is not live. Changes from the plan above: the page
+text lives in `scripts/build_pages.py`, as in `golded-ftn-tools`, not in
+`docs/manual/`; the screenshots are rendered by `scripts/build_screenshots.py`
+into `docs/screens/` and inlined; `ftnt` 1.2.0 was tested against golded
+(create, write, read back, reply saved by golded) before the database page
+documents it. Browser check: Chrome desktop and 390 px mobile; Safari, print
+and keyboard-only navigation are not checked yet.
+
 ## Phase 6 — Repository documents
 
 - `README.md` in English: what, install, run, config summary, link to the manual.
@@ -194,7 +203,9 @@ JavaScript, readable without it, local assets only.
    `golded-ftn-tools` (downloads release assets, checks SHA-256, publishes via OIDC).
 3. Tag `v1.0.0`, create the GitHub release with wheel, sdist and `RELEASE-SHA256.txt`.
 4. Run the publish workflow.
-5. Enable GitHub Pages; verify the public manual.
+5. Enable GitHub Pages, set the repository variable `PUBLISH_PAGES` to `true`
+   (the deploy job in `pages.yml` is off until then), flip `RELEASED` in
+   `scripts/build_pages.py` and rebuild; verify the public manual.
 6. Verify from the public index: `uvx golded --help` without wheelhouse.
 7. Link from the suite docs (Phase 5.6) once the manual is live.
 

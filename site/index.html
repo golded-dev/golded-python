@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="golded reads and writes FidoNet echomail and netmail stored in SQLite, in a terminal UI modelled on GoldED.">
+<title>golded · GoldED message reader</title>
+<link rel="stylesheet" href="assets/manual.css">
+<link rel="stylesheet" href="assets/golded.css">
+</head>
+<body>
+<a class="skip" href="#install">Skip to content</a>
+<div class="page">
+<header class="masthead">
+<a class="logo-mark" href="index.html" aria-label="golded home">
+<img class="logo" src="assets/golded-logo.png" width="600" height="205" alt="GoldED">
+<span class="logo-subtitle" aria-hidden="true">for the terminal</span>
+</a>
+<div><span>GoldED/Py</span><a href="https://golded-dev.github.io/golded-ftn-python-docs/">Library docs ↗</a></div>
+</header>
+<div class="shell">
+<div class="bar"><span>GOLDED / MESSAGE READER</span><span>1.0.0 · NOT RELEASED · PYTHON 3.12+</span></div>
+<div class="layout">
+<aside><div class="sidebar">
+<nav class="page-nav" aria-label="Manual"><a href="index.html" aria-current="page">Home</a><a href="database.html">Message bases</a><a href="config.html">Configuration</a><a href="keys.html">Keys</a><a href="screens.html">Screens</a></nav>
+<details class="contents" open><summary>On this page</summary><nav class="nav" aria-label="Sections"><a href="#install"><span class="num">00</span>Install</a><a href="#first-run"><span class="num">01</span>First run</a><a href="#manual"><span class="num">02</span>This manual</a></nav></details>
+</div></aside>
+<main><p class="eyebrow">Old echomail. New terminal.</p><p class="command">golded</p><h1>A message reader for the terminal.</h1><p class="hero-lead">Read and write FidoNet echomail and netmail stored in SQLite. Area list, message list, thread tree, quoting replies, two DOS-era themes.</p><section class="guide-section" id="install"><div class="section-title"><span>00</span><h2>Install</h2></div><p><strong>Not released yet.</strong> <code>golded</code> is not on PyPI. Until it is, install it from a checkout of the repository with Python 3.12 or newer:</p><div class="code-pane" id="install-checkout"><div class="code-head"><span>from a checkout</span><button type="button" data-copy="install-checkout-text" hidden>Copy code</button></div><pre><code id="install-checkout-text">uv tool install .
+golded --help
+</code></pre></div><p>The command is <code>golded</code>; the package and import name are also <code>golded</code>. It runs on Linux and macOS. Windows is outside its test and compatibility promises.</p></section><section class="guide-section" id="first-run"><div class="section-title"><span>01</span><h2>First run</h2></div><p><code>golded</code> opens one SQLite message base. By default it looks for <code>messages.sqlite3</code> and <code>golded.toml</code> in the current directory.</p><div class="code-pane" id="first-run-code"><div class="code-head"><span>open a base</span><button type="button" data-copy="first-run-code-text" hidden>Copy code</button></div><pre><code id="first-run-code-text">golded --database messages.sqlite3
+</code></pre></div><p>The splash screen counts down from 10; any key skips it. Pick an area with <code>↑</code> <code>↓</code> and <code>Enter</code>, open a message, and step with <code>←</code> <code>→</code>. <code>Esc</code> goes back one screen and quits from the area list. Set your name and address in <a href="config.html">golded.toml</a> before you write.</p></section><section class="guide-section" id="manual"><div class="section-title"><span>02</span><h2>This manual</h2></div><ul class="contract-list"><li><a href="database.html">Message bases</a> — what golded opens, and how to make one</li><li><a href="config.html">Configuration</a> — golded.toml and the command-line options</li><li><a href="keys.html">Keys</a> — every key, screen by screen</li><li><a href="screens.html">Screens</a> — each screen in both themes</li></ul><p>Storage comes from the GoldED for Python libraries <code>golded-ftn</code> and <code>golded-ftn-sqlite</code>; their <a href="https://golded-dev.github.io/golded-ftn-python-docs/">library docs</a> describe the format.</p></section></main>
+</div></div>
+<footer><span>GoldED/Py / GoldED.dev</span><span>1.0.0 · NOT RELEASED · MIT LICENSE</span></footer>
+</div>
+
+<script>
+const contents=document.querySelector('.contents');
+if(contents && window.matchMedia('(max-width:800px)').matches) contents.open=false;
+for(const button of document.querySelectorAll('[data-copy]')){
+  button.hidden=false;
+  button.addEventListener('click', async () => {
+    const node=document.getElementById(button.dataset.copy);
+    const text=node.textContent;
+    try {
+      if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(text);
+      } else {
+        const field=document.createElement('textarea');
+        field.value=text;
+        field.style.position='fixed';
+        field.style.opacity='0';
+        document.body.append(field);
+        field.select();
+        const ok=document.execCommand('copy');
+        field.remove();
+        button.focus();
+        if(!ok) throw new Error('copy');
+      }
+      button.textContent='Copied';
+    } catch {
+      button.textContent='Select code';
+      const range=document.createRange();
+      range.selectNodeContents(node);
+      const selection=window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+    setTimeout(() => button.textContent='Copy code', 1800);
+  });
+}
+const links=[...document.querySelectorAll('.nav a')];
+const sections=[...document.querySelectorAll('main section')];
+function markSection(id){
+  for(const link of links){
+    if(link.hash === '#' + id) link.setAttribute('aria-current','location');
+    else link.removeAttribute('aria-current');
+  }
+}
+function track(){
+  if(!sections.length) return;
+  let current=sections[0].id;
+  for(const section of sections){
+    if(section.getBoundingClientRect().top <= 120) current=section.id;
+  }
+  const page=document.scrollingElement;
+  if(page.scrollHeight > page.clientHeight &&
+     Math.ceil(page.scrollTop + page.clientHeight) >= page.scrollHeight - 2){
+    current=sections[sections.length - 1].id;
+  }
+  markSection(current);
+}
+window.addEventListener('scroll', track, {passive:true});
+window.addEventListener('resize', track);
+window.addEventListener('hashchange', () => {
+  const selected=links.find(link => link.hash === window.location.hash);
+  if(selected) markSection(selected.hash.slice(1));
+  else track();
+});
+track();
+</script>
+
+</body>
+</html>

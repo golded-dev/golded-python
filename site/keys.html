@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Every golded key binding, screen by screen.">
+<title>Keys · golded</title>
+<link rel="stylesheet" href="assets/manual.css">
+<link rel="stylesheet" href="assets/golded.css">
+</head>
+<body>
+<a class="skip" href="#everywhere">Skip to content</a>
+<div class="page">
+<header class="masthead">
+<a class="logo-mark" href="index.html" aria-label="golded home">
+<img class="logo" src="assets/golded-logo.png" width="600" height="205" alt="GoldED">
+<span class="logo-subtitle" aria-hidden="true">for the terminal</span>
+</a>
+<div><span>GoldED/Py</span><a href="https://golded-dev.github.io/golded-ftn-python-docs/">Library docs ↗</a></div>
+</header>
+<div class="shell">
+<div class="bar"><span>GOLDED / MESSAGE READER</span><span>1.0.0 · NOT RELEASED · PYTHON 3.12+</span></div>
+<div class="layout">
+<aside><div class="sidebar">
+<nav class="page-nav" aria-label="Manual"><a href="index.html">Home</a><a href="database.html">Message bases</a><a href="config.html">Configuration</a><a href="keys.html" aria-current="page">Keys</a><a href="screens.html">Screens</a></nav>
+<details class="contents" open><summary>On this page</summary><nav class="nav" aria-label="Sections"><a href="#everywhere"><span class="num">00</span>Everywhere</a><a href="#splash"><span class="num">01</span>Splash</a><a href="#area-list"><span class="num">02</span>Area list</a><a href="#message-list"><span class="num">03</span>Message list</a><a href="#message-view"><span class="num">04</span>Message view</a><a href="#write"><span class="num">05</span>Write and reply</a><a href="#discard"><span class="num">06</span>Discard dialog</a></nav></details>
+</div></aside>
+<main><p class="eyebrow">No mouse needed. Mostly.</p><p class="command">golded</p><h1>Keys.</h1><p class="hero-lead">Every key, screen by screen. The list is checked against the bindings in the code.</p><section class="guide-section" id="everywhere"><div class="section-title"><span>00</span><h2>Everywhere</h2></div><p>Except where a screen uses the key itself: in the area list letters filter, and in the write screen they are text.</p><div class="table-wrap"><table><thead><tr><th>Key</th><th>Action</th></tr></thead><tbody><tr><td><span data-bindings="GoldED:q"><kbd>q</kbd></span></td><td>Quit</td></tr><tr><td><span data-bindings="GoldED:escape"><kbd>Esc</kbd></span></td><td>Back one screen; quits from the area list</td></tr><tr><td><span data-bindings="GoldED:f9"><kbd>F9</kbd></span></td><td>Toggle the dark and light theme</td></tr></tbody></table></div></section><section class="guide-section" id="splash"><div class="section-title"><span>01</span><h2>Splash</h2></div><div class="table-wrap"><table><thead><tr><th>Key</th><th>Action</th></tr></thead><tbody><tr><td><span><kbd>Any key</kbd></span></td><td>Continue to the area list (otherwise after 10 seconds)</td></tr></tbody></table></div></section><section class="guide-section" id="area-list"><div class="section-title"><span>02</span><h2>Area list</h2></div><div class="table-wrap"><table><thead><tr><th>Key</th><th>Action</th></tr></thead><tbody><tr><td><span><kbd>↑</kbd> <kbd>↓</kbd></span></td><td>Move the cursor</td></tr><tr><td><span><kbd>Enter</kbd></span></td><td>Open the area</td></tr><tr><td><span data-bindings="AreaListScreen:space"><kbd>Space</kbd></span></td><td>Page down</td></tr><tr><td><span data-bindings="AreaListScreen:shift+space"><kbd>Shift+Space</kbd></span></td><td>Page up</td></tr><tr><td><span><kbd>Letters</kbd></span></td><td>Filter on area name or code; Backspace deletes</td></tr></tbody></table></div></section><section class="guide-section" id="message-list"><div class="section-title"><span>03</span><h2>Message list</h2></div><div class="table-wrap"><table><thead><tr><th>Key</th><th>Action</th></tr></thead><tbody><tr><td><span><kbd>↑</kbd> <kbd>↓</kbd></span></td><td>Move the cursor</td></tr><tr><td><span><kbd>Enter</kbd></span></td><td>Open the message</td></tr><tr><td><span data-bindings="MessageListScreen:w"><kbd>w</kbd></span></td><td>Write a new message</td></tr><tr><td><span data-bindings="MessageListScreen:t"><kbd>t</kbd></span></td><td>Toggle flat list and thread tree</td></tr><tr><td><span data-bindings="MessageListScreen:escape"><kbd>Esc</kbd></span></td><td>Back to the area list</td></tr><tr><td><span data-bindings="MessageListScreen:space"><kbd>Space</kbd></span></td><td>Page down</td></tr><tr><td><span data-bindings="MessageListScreen:shift+space"><kbd>Shift+Space</kbd></span></td><td>Page up</td></tr></tbody></table></div></section><section class="guide-section" id="message-view"><div class="section-title"><span>04</span><h2>Message view</h2></div><div class="table-wrap"><table><thead><tr><th>Key</th><th>Action</th></tr></thead><tbody><tr><td><span data-bindings="MessageViewScreen:right"><kbd>→</kbd></span></td><td>Next message</td></tr><tr><td><span data-bindings="MessageViewScreen:left"><kbd>←</kbd></span></td><td>Previous message</td></tr><tr><td><span data-bindings="MessageViewScreen:shift+right"><kbd>Shift+→</kbd></span></td><td>Next message with the same subject</td></tr><tr><td><span data-bindings="MessageViewScreen:shift+left"><kbd>Shift+←</kbd></span></td><td>Previous message with the same subject</td></tr><tr><td><span data-bindings="MessageViewScreen:space"><kbd>Space</kbd></span></td><td>Page down in the body</td></tr><tr><td><span data-bindings="MessageViewScreen:shift+space"><kbd>Shift+Space</kbd></span></td><td>Page up in the body</td></tr><tr><td><span data-bindings="MessageViewScreen:m"><kbd>m</kbd></span></td><td>Mojibake repair on or off (display only; the base is not changed)</td></tr><tr><td><span data-bindings="MessageViewScreen:w"><kbd>w</kbd></span></td><td>Write a new message</td></tr><tr><td><span data-bindings="MessageViewScreen:r"><kbd>r</kbd></span></td><td>Reply, quoting the body as shown (with repair if m is on)</td></tr><tr><td><span data-bindings="MessageViewScreen:escape"><kbd>Esc</kbd></span></td><td>Back to the message list</td></tr></tbody></table></div></section><section class="guide-section" id="write"><div class="section-title"><span>05</span><h2>Write and reply</h2></div><p>Cmd+S reaches the app only in terminals that pass it on; F2 and Ctrl+S always work.</p><div class="table-wrap"><table><thead><tr><th>Key</th><th>Action</th></tr></thead><tbody><tr><td><span data-bindings="WriteMessageScreen:f2 WriteMessageScreen:ctrl+s WriteMessageScreen:super+s"><kbd>F2</kbd> <kbd>Ctrl+S</kbd> <kbd>Cmd+S</kbd></span></td><td>Save the message</td></tr><tr><td><span data-bindings="WriteMessageScreen:up WriteMessageScreen:down"><kbd>↑</kbd> <kbd>↓</kbd></span></td><td>Move between From, To, Subj and the body; ↑ on the body&#x27;s top line goes to Subj</td></tr><tr><td><span data-bindings="WriteMessageScreen:escape"><kbd>Esc</kbd></span></td><td>Cancel; asks before discarding the draft</td></tr></tbody></table></div></section><section class="guide-section" id="discard"><div class="section-title"><span>06</span><h2>Discard dialog</h2></div><div class="table-wrap"><table><thead><tr><th>Key</th><th>Action</th></tr></thead><tbody><tr><td><span data-bindings="DiscardDialog:y"><kbd>y</kbd></span></td><td>Discard the draft</td></tr><tr><td><span data-bindings="DiscardDialog:n DiscardDialog:escape"><kbd>n</kbd> <kbd>Esc</kbd></span></td><td>Keep writing</td></tr></tbody></table></div></section></main>
+</div></div>
+<footer><span>GoldED/Py / GoldED.dev</span><span>1.0.0 · NOT RELEASED · MIT LICENSE</span></footer>
+</div>
+
+<script>
+const contents=document.querySelector('.contents');
+if(contents && window.matchMedia('(max-width:800px)').matches) contents.open=false;
+for(const button of document.querySelectorAll('[data-copy]')){
+  button.hidden=false;
+  button.addEventListener('click', async () => {
+    const node=document.getElementById(button.dataset.copy);
+    const text=node.textContent;
+    try {
+      if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(text);
+      } else {
+        const field=document.createElement('textarea');
+        field.value=text;
+        field.style.position='fixed';
+        field.style.opacity='0';
+        document.body.append(field);
+        field.select();
+        const ok=document.execCommand('copy');
+        field.remove();
+        button.focus();
+        if(!ok) throw new Error('copy');
+      }
+      button.textContent='Copied';
+    } catch {
+      button.textContent='Select code';
+      const range=document.createRange();
+      range.selectNodeContents(node);
+      const selection=window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+    setTimeout(() => button.textContent='Copy code', 1800);
+  });
+}
+const links=[...document.querySelectorAll('.nav a')];
+const sections=[...document.querySelectorAll('main section')];
+function markSection(id){
+  for(const link of links){
+    if(link.hash === '#' + id) link.setAttribute('aria-current','location');
+    else link.removeAttribute('aria-current');
+  }
+}
+function track(){
+  if(!sections.length) return;
+  let current=sections[0].id;
+  for(const section of sections){
+    if(section.getBoundingClientRect().top <= 120) current=section.id;
+  }
+  const page=document.scrollingElement;
+  if(page.scrollHeight > page.clientHeight &&
+     Math.ceil(page.scrollTop + page.clientHeight) >= page.scrollHeight - 2){
+    current=sections[sections.length - 1].id;
+  }
+  markSection(current);
+}
+window.addEventListener('scroll', track, {passive:true});
+window.addEventListener('resize', track);
+window.addEventListener('hashchange', () => {
+  const selected=links.find(link => link.hash === window.location.hash);
+  if(selected) markSection(selected.hash.slice(1));
+  else track();
+});
+track();
+</script>
+
+</body>
+</html>

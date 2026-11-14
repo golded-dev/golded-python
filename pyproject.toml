@@ -69,6 +69,10 @@ src = ["src", "scripts"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
+[tool.ruff.lint.per-file-ignores]
+# Page copy and inline JavaScript; wrapping them would not make them clearer.
+"scripts/build_pages.py" = ["E501"]
+
 [tool.mypy]
 strict = true
 files = ["src", "tests", "scripts"]
