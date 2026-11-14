@@ -7,7 +7,7 @@ from golded.data.store import open_message_store
 from golded.logic.session import Session
 from golded.logic.user_config import UserConfig
 from golded.logic.version import PRODUCT
-from seed import seed_database
+from seed_demo import seed_database
 
 
 class SessionTests(unittest.TestCase):

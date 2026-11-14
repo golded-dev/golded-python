@@ -18,7 +18,7 @@ src/golded/cli.py   entry point (`golded`, `python -m golded`)
 src/golded/ui/      draws the screen and handles keys (Textual)
 src/golded/logic/   selected area, current message, navigation, draft
 src/golded/data/    thin edge toward the FTN packages
-seed.py             builds a reproducible test database
+scripts/            demo seeder (`seed_demo.py`) and release checks
 tests/              unittest, run with pytest
 ```
 
@@ -30,13 +30,13 @@ Requires [uv](https://docs.astral.sh/uv/).
 
 ```bash
 uv sync
-uv run python seed.py
+uv run python scripts/seed_demo.py
 cp golded.toml.example golded.toml
 uv run golded
 uv run pytest
 ```
 
-`seed.py` writes `messages.sqlite3` (the same default as `golded`). **It deletes the file first if it exists, along with its `-wal` and `-shm` files**, so do not rerun it if you want to keep messages from a demo or manual test. `golded.toml` (copied from the example) points at that file and sets your From name and FTN address. Without a config the app still uses `messages.sqlite3`.
+`scripts/seed_demo.py` writes `messages.sqlite3` (the same default as `golded`). **It deletes the file first if it exists, along with its `-wal` and `-shm` files**, so do not rerun it if you want to keep messages from a demo or manual test. `golded.toml` (copied from the example) points at that file and sets your From name and FTN address. Without a config the app still uses `messages.sqlite3`.
 
 ## Config (`golded.toml`)
 

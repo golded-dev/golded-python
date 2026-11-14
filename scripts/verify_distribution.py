@@ -45,7 +45,7 @@ def check_wheel(wheel: Path, project: dict[str, str]) -> None:
     assert "golded/py.typed" in names
     assert any(n.endswith("/licenses/LICENSE") for n in names)
     assert not any("file:" in d for d in metadata.get_all("Requires-Dist", []))
-    assert not any(n.startswith(("tests/", "seed")) for n in names)
+    assert not any(n.startswith(("tests/", "scripts/")) for n in names)
 
 
 def extract_sdist(sdist: Path, work: Path) -> Path:

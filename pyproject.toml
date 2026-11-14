@@ -54,7 +54,6 @@ packages = ["src/golded"]
 include = [
     "src",
     "tests",
-    "seed.py",
     "scripts",
     "docs",
     "golded.toml.example",
@@ -65,14 +64,15 @@ include = [
 
 [tool.ruff]
 target-version = "py312"
+src = ["src", "scripts"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
 [tool.mypy]
 strict = true
-files = ["src", "tests", "scripts", "seed.py"]
+files = ["src", "tests", "scripts"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = ["scripts"]

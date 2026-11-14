@@ -16,7 +16,7 @@ from golded.ui.message_list import MessageListScreen
 from golded.ui.message_view import MessageViewScreen
 from golded.ui.splash import SplashScreen
 from golded.ui.write_message import DiscardDialog, WriteMessageScreen
-from seed import seed_database
+from seed_demo import seed_database
 
 SIZE = (100, 30)
 

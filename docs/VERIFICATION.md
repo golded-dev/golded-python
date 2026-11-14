@@ -52,7 +52,7 @@ gives 15 updates and a pagebar equal to a fresh repaint.
 ## Manual terminal checks
 
 Not run yet. Needs a person at each terminal, with a seeded database
-(`uv run python seed.py`).
+(`uv run python scripts/seed_demo.py`).
 
 | Check | macOS Terminal | iTerm2 | Linux terminal |
 | --- | --- | --- | --- |
