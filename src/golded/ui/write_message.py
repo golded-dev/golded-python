@@ -12,6 +12,7 @@ from textual.widgets import Input, Static, TextArea
 from golded.ui.status import StatusBar
 from golded.ui.title import area_title_line
 
+
 def open_write_screen(app, session, callback) -> None:
     session.start_draft_message()
 
@@ -19,6 +20,7 @@ def open_write_screen(app, session, callback) -> None:
         return
 
     app.push_screen(WriteMessageScreen(session), callback)
+
 
 def open_reply_screen(
     app,
@@ -33,6 +35,7 @@ def open_reply_screen(
         return
 
     app.push_screen(WriteMessageScreen(session), callback)
+
 
 class DiscardDialog(ModalScreen[bool]):
     """Ask whether to discard the draft.
@@ -77,15 +80,16 @@ class DiscardDialog(ModalScreen[bool]):
     ]
 
     def compose(self) -> ComposeResult:
-        with Vertical(id = "discard-box"):
-            yield Static("Discard draft?", id = "discard-title")
-            yield Static("Y / N", id = "discard-keys")
+        with Vertical(id="discard-box"):
+            yield Static("Discard draft?", id="discard-title")
+            yield Static("Y / N", id="discard-keys")
 
     def action_confirm(self) -> None:
         self.dismiss(True)
 
     def action_cancel(self) -> None:
         self.dismiss(False)
+
 
 class WriteMessageScreen(Screen):
     AUTO_FOCUS = "#subject"
@@ -206,10 +210,10 @@ class WriteMessageScreen(Screen):
 
     BINDINGS = [
         ("escape", "go_back", "Back"),
-        Binding("ctrl+s,super+s", "save", "Save", priority = True),
-        Binding("f2", "save", "Save", priority = True),
-        Binding("up", "focus_up", "Up", priority = True),
-        Binding("down", "focus_down", "Down", priority = True),
+        Binding("ctrl+s,super+s", "save", "Save", priority=True),
+        Binding("f2", "save", "Save", priority=True),
+        Binding("up", "focus_up", "Up", priority=True),
+        Binding("down", "focus_down", "Down", priority=True),
     ]
 
     def __init__(self, session) -> None:
@@ -217,32 +221,32 @@ class WriteMessageScreen(Screen):
         self.__session = session
 
     def compose(self) -> ComposeResult:
-        yield Static("", id = "title", markup = True)
-        yield Static("", id = "msg-line")
+        yield Static("", id="title", markup=True)
+        yield Static("", id="msg-line")
         yield Vertical(
             Horizontal(
-                Static(" From :", classes = "field-label"),
-                Input(id = "from-name", select_on_focus = False),
-                Static("", id = "from-addr"),
-                Static("", classes = "field-gap"),
-                Static("", id = "from-date"),
-                classes = "field-row",
+                Static(" From :", classes="field-label"),
+                Input(id="from-name", select_on_focus=False),
+                Static("", id="from-addr"),
+                Static("", classes="field-gap"),
+                Static("", id="from-date"),
+                classes="field-row",
             ),
             Horizontal(
-                Static(" To   :", classes = "field-label"),
-                Input(id = "to-name", select_on_focus = False),
-                Input("", id = "to-addr", select_on_focus = False),
-                classes = "field-row",
+                Static(" To   :", classes="field-label"),
+                Input(id="to-name", select_on_focus=False),
+                Input("", id="to-addr", select_on_focus=False),
+                classes="field-row",
             ),
             Horizontal(
-                Static(" Subj :", classes = "field-label"),
-                Input(id = "subject", select_on_focus = False),
-                classes = "field-row",
+                Static(" Subj :", classes="field-label"),
+                Input(id="subject", select_on_focus=False),
+                classes="field-row",
             ),
-            id = "fields",
+            id="fields",
         )
-        yield Static("", id = "sep", markup = True)
-        yield TextArea(id = "body")
+        yield Static("", id="sep", markup=True)
+        yield TextArea(id="body")
         yield StatusBar()
 
     def on_mount(self) -> None:
@@ -257,14 +261,14 @@ class WriteMessageScreen(Screen):
         self.query_one("#subject", Input).value = draft.subject
         self.query_one("#body", TextArea).text = draft.body_text
 
-        self.show_header(reset_to_address = True)
+        self.show_header(reset_to_address=True)
         self.update_status("")
 
     def on_resize(self) -> None:
-        self.show_header(reset_to_address = False)
+        self.show_header(reset_to_address=False)
 
     def apply_theme(self) -> None:
-        self.show_header(reset_to_address = False)
+        self.show_header(reset_to_address=False)
 
     def show_header(self, reset_to_address: bool = False) -> None:
         area_code = self.__session.draft_area()
@@ -287,9 +291,7 @@ class WriteMessageScreen(Screen):
 
         total = len(self.__session.messages())
         position = total + 1
-        self.query_one("#msg-line", Static).update(
-            f" Msg  : {position} of {position}"
-        )
+        self.query_one("#msg-line", Static).update(f" Msg  : {position} of {position}")
 
         draft = self.__session.draft_message()
         from_address = ""
@@ -412,13 +414,13 @@ class WriteMessageScreen(Screen):
             to_address = previous_to_address
 
         message = OutgoingMessage(
-            from_name = self.query_one("#from-name", Input).value,
-            to_name = self.query_one("#to-name", Input).value,
-            subject = self.query_one("#subject", Input).value,
-            body_text = self.query_one("#body", TextArea).text,
-            reply_to_msgno = reply_to,
-            from_address = from_address,
-            to_address = to_address,
+            from_name=self.query_one("#from-name", Input).value,
+            to_name=self.query_one("#to-name", Input).value,
+            subject=self.query_one("#subject", Input).value,
+            body_text=self.query_one("#body", TextArea).text,
+            reply_to_msgno=reply_to,
+            from_address=from_address,
+            to_address=to_address,
         )
         self.__session.set_draft_message(message)
 

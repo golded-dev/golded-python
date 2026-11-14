@@ -12,6 +12,7 @@ from golded.ui.splash import SplashScreen
 from golded.ui.theme import DEFAULT_THEME, THEMES
 from golded.ui.write_message import WriteMessageScreen
 
+
 class GoldED(App):
     CSS = """
     Screen {
@@ -140,6 +141,7 @@ class GoldED(App):
                 ),
             ):
                 screen.apply_theme()
+
 
 def run(
     database_path: str = "messages.sqlite3",

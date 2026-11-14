@@ -10,6 +10,7 @@ from golded.logic.quote import (
     split_body_at_tagline,
 )
 
+
 class QuoteTests(unittest.TestCase):
     def test_initials_one_word(self):
         self.assertEqual(quote_initials("Odinn"), "O")
@@ -76,6 +77,7 @@ class QuoteTests(unittest.TestCase):
         self.assertTrue(has_golded_tagline("Hi\n--- GoldED/Py\n"))
         self.assertFalse(has_golded_tagline("Hi\n--- Other\n"))
         self.assertFalse(has_golded_tagline("Hi only"))
+
 
 if __name__ == "__main__":
     unittest.main()

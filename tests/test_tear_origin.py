@@ -5,6 +5,7 @@ from golded_ftn import FtnAddress
 from golded.logic.tear_origin import DEFAULT_ORIGIN, tear_origin_block, with_tear_origin
 from golded.logic.version import PRODUCT
 
+
 class TearOriginTests(unittest.TestCase):
     def test_block_with_address(self):
         address = FtnAddress.from_string("2:236/777")
@@ -40,6 +41,7 @@ class TearOriginTests(unittest.TestCase):
         self.assertIn("---- skillelinje", result)
         self.assertIn("Efter", result)
         self.assertIn("Where we're going, we don't need roads.", result)
+
 
 if __name__ == "__main__":
     unittest.main()

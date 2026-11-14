@@ -1,10 +1,12 @@
 """Build a flat message list in depth-first thread order."""
 
+
 class ThreadRow:
     def __init__(self, message, branch_path: list[bool], broken: bool = False) -> None:
         self.message = message
         self.branch_path = branch_path
         self.broken = broken
+
 
 def format_branch_prefix(branch_path: list[bool]) -> str:
     if len(branch_path) == 0:
@@ -27,6 +29,7 @@ def format_branch_prefix(branch_path: list[bool]) -> str:
                 parts.append("└─")
 
     return "".join(parts)
+
 
 def build_thread_rows(messages: list) -> list[ThreadRow]:
     by_msgno = {}
@@ -60,6 +63,7 @@ def build_thread_rows(messages: list) -> list[ThreadRow]:
         _walk_thread(message, [], replies_by_msgno, rows, visited, True)
 
     return rows
+
 
 def _walk_thread(
     root,

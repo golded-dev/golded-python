@@ -13,6 +13,7 @@ from golded.ui.status import StatusBar
 from golded.ui.title import area_title_line
 from golded.ui.write_message import open_reply_screen, open_write_screen
 
+
 class MessageViewScreen(Screen):
     DEFAULT_CSS = """
     MessageViewScreen {
@@ -78,10 +79,12 @@ class MessageViewScreen(Screen):
 
     BINDINGS = [
         ("escape", "go_back", "Back"),
-        Binding("right", "next_message", "Next", priority = True),
-        Binding("left", "previous_message", "Prev", priority = True),
-        Binding("shift+right", "next_subject_message", "Next subject", priority = True),
-        Binding("shift+left", "previous_subject_message", "Prev subject", priority = True),
+        Binding("right", "next_message", "Next", priority=True),
+        Binding("left", "previous_message", "Prev", priority=True),
+        Binding("shift+right", "next_subject_message", "Next subject", priority=True),
+        Binding(
+            "shift+left", "previous_subject_message", "Prev subject", priority=True
+        ),
         ("space", "page_down", "Page down"),
         ("shift+space", "page_up", "Page up"),
         ("m", "toggle_mojibake_repair", "Mojibake"),
@@ -116,7 +119,7 @@ class MessageViewScreen(Screen):
             subject,
         )
 
-    def after_write(self, result = None) -> None:
+    def after_write(self, result=None) -> None:
         if result is None:
             self.show_current_message()
             return
@@ -152,17 +155,17 @@ class MessageViewScreen(Screen):
         self.sync_pagebar()
 
     def compose(self) -> ComposeResult:
-        yield Static("", id = "title", markup = True)
-        yield Static("", id = "meta", markup = False)
-        yield Static("", id = "sep", markup = True)
+        yield Static("", id="title", markup=True)
+        yield Static("", id="meta", markup=False)
+        yield Static("", id="sep", markup=True)
         yield Horizontal(
             VerticalScroll(
-                Static("", id = "body-main", markup = False),
-                Static("", id = "body-tag", markup = False),
-                id = "body-scroll",
+                Static("", id="body-main", markup=False),
+                Static("", id="body-tag", markup=False),
+                id="body-scroll",
             ),
-            Static("", id = "pagebar"),
-            id = "body-frame",
+            Static("", id="pagebar"),
+            id="body-frame",
         )
         yield StatusBar()
 
@@ -246,10 +249,7 @@ class MessageViewScreen(Screen):
         to_line = self.party_line("To   ", to_name, to_address, "", width)
 
         meta = (
-            f" Msg  : {position} of {total}\n"
-            f"{from_line}\n"
-            f"{to_line}\n"
-            f" Subj : {subject}"
+            f" Msg  : {position} of {total}\n{from_line}\n{to_line}\n Subj : {subject}"
         )
         self.query_one("#meta", Static).update(meta)
 
@@ -262,11 +262,7 @@ class MessageViewScreen(Screen):
 
         line = self.app.ged_color("line")
         title_color = self.app.ged_color("title")
-        sep = (
-            f"[{line}]─[/]"
-            f"[{title_color}]{size_text}[/]"
-            f"[{line}]{'─' * after}[/]"
-        )
+        sep = f"[{line}]─[/][{title_color}]{size_text}[/][{line}]{'─' * after}[/]"
         self.query_one("#sep", Static).update(sep)
 
     def show_body(self, message) -> None:
@@ -288,7 +284,7 @@ class MessageViewScreen(Screen):
 
         status_bar = self.query_one(StatusBar)
         status_bar.set_middle(status)
-        status_bar.set_product(squared = has_golded_tagline(message.body_text))
+        status_bar.set_product(squared=has_golded_tagline(message.body_text))
 
     def display_address(self, address) -> str:
         if address is None:

@@ -11,6 +11,7 @@ THEME_NAMES = ("dark", "light")
 DEFAULT_THEME = "dark"
 DEFAULT_THREADED_LIST = False
 
+
 class UserConfig:
     def __init__(
         self,
@@ -27,6 +28,7 @@ class UserConfig:
         self.origin = DEFAULT_ORIGIN if origin.strip() == "" else origin
         self.theme = theme if theme in THEME_NAMES else DEFAULT_THEME
         self.threaded_list = bool(threaded_list)
+
 
 def load_user_config(path) -> UserConfig:
     config_path = Path(path)
@@ -49,10 +51,10 @@ def load_user_config(path) -> UserConfig:
         from_address = FtnAddress.from_string(address_text)
 
     return UserConfig(
-        from_name = from_name,
-        from_address = from_address,
-        database = database,
-        origin = origin,
-        theme = theme,
-        threaded_list = bool(threaded_list),
+        from_name=from_name,
+        from_address=from_address,
+        database=database,
+        origin=origin,
+        theme=theme,
+        threaded_list=bool(threaded_list),
     )

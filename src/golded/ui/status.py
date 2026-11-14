@@ -8,6 +8,7 @@ from textual.widgets import Static
 
 from golded.logic.version import PRODUCT, PRODUCT_NAME, VERSION
 
+
 class StatusBar(Horizontal):
     DEFAULT_CSS = """
     StatusBar {
@@ -43,12 +44,12 @@ class StatusBar(Horizontal):
     """
 
     def __init__(self) -> None:
-        super().__init__(id = "status")
+        super().__init__(id="status")
 
     def compose(self) -> ComposeResult:
-        yield Static(f" {PRODUCT} | ", id = "status-left")
-        yield Static("", id = "status-middle")
-        yield Static("", id = "status-right")
+        yield Static(f" {PRODUCT} | ", id="status-left")
+        yield Static("", id="status-middle")
+        yield Static("", id="status-right")
 
     def on_mount(self) -> None:
         self.set_interval(1.0, self.update_clock)

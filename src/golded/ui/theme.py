@@ -13,14 +13,14 @@ WHITE = "#ffffff"
 LOGO_YELLOW = "#ffe45a"
 
 DARK = Theme(
-    name = "dark",
-    primary = BLUE,
-    foreground = LGREY,
-    background = BLACK,
-    surface = BLACK,
-    panel = BLACK,
-    dark = True,
-    variables = {
+    name="dark",
+    primary=BLUE,
+    foreground=LGREY,
+    background=BLACK,
+    surface=BLACK,
+    panel=BLACK,
+    dark=True,
+    variables={
         "ged-bg": BLACK,
         "ged-fg": LGREY,
         "ged-line": BLUE,
@@ -45,14 +45,14 @@ DARK = Theme(
 
 # Light theme from classic GoldED Black on LGrey (gedcol22/23).
 LIGHT = Theme(
-    name = "light",
-    primary = BLUE,
-    foreground = BLACK,
-    background = LGREY_LIGHT,
-    surface = LGREY_LIGHT,
-    panel = LGREY_LIGHT,
-    dark = False,
-    variables = {
+    name="light",
+    primary=BLUE,
+    foreground=BLACK,
+    background=LGREY_LIGHT,
+    surface=LGREY_LIGHT,
+    panel=LGREY_LIGHT,
+    dark=False,
+    variables={
         "ged-bg": LGREY_LIGHT,
         "ged-fg": BLACK,
         "ged-line": YELLOW,

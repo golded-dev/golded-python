@@ -11,6 +11,7 @@ from golded.logic.user_config import (
     load_user_config,
 )
 
+
 class UserConfigTests(unittest.TestCase):
     def test_missing_file_is_empty(self):
         config = load_user_config("/tmp/does-not-exist-golded.toml")
@@ -31,7 +32,7 @@ class UserConfigTests(unittest.TestCase):
                 'origin = "Coffee and packets"\n'
                 'theme = "light"\n'
                 "threaded_list = true\n",
-                encoding = "utf-8",
+                encoding="utf-8",
             )
             config = load_user_config(path)
 
@@ -45,10 +46,11 @@ class UserConfigTests(unittest.TestCase):
     def test_unknown_theme_falls_back(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "golded.toml"
-            path.write_text('theme = "neon"\n', encoding = "utf-8")
+            path.write_text('theme = "neon"\n', encoding="utf-8")
             config = load_user_config(path)
 
         self.assertEqual(config.theme, DEFAULT_THEME)
+
 
 if __name__ == "__main__":
     unittest.main()

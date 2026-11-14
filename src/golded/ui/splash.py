@@ -32,6 +32,7 @@ LICENSE_TEXT = (
     "distribute it. See LICENSE for the full terms."
 )
 
+
 class SplashScreen(Screen):
     DEFAULT_CSS = """
     SplashScreen {
@@ -102,17 +103,17 @@ class SplashScreen(Screen):
         self.__done = False
 
     def compose(self) -> ComposeResult:
-        with Vertical(id = "brag"):
-            with Horizontal(id = "brag-top"):
-                yield Static(LOGO, id = "logo")
-                yield Static(CREDITS, id = "credits")
+        with Vertical(id="brag"):
+            with Horizontal(id="brag-top"):
+                yield Static(LOGO, id="logo")
+                yield Static(CREDITS, id="credits")
             yield Static(
                 f"---*-*-*** {RELEASE_NAME} ***-*-*---",
-                id = "release",
+                id="release",
             )
-            with Vertical(id = "mid"):
-                yield Static(LICENSE_TEXT, id = "license")
-            yield Static(self.prompt_text(), id = "prompt")
+            with Vertical(id="mid"):
+                yield Static(LICENSE_TEXT, id="license")
+            yield Static(self.prompt_text(), id="prompt")
 
     def prompt_text(self) -> str:
         return f"Press any key or wait  {self.__left}"

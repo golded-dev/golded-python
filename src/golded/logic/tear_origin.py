@@ -7,6 +7,7 @@ from golded.logic.version import PRODUCT
 
 DEFAULT_ORIGIN = "Where we're going, we don't need roads."
 
+
 def tear_origin_block(
     origin: str,
     from_address: FtnAddress | None = None,
@@ -21,6 +22,7 @@ def tear_origin_block(
         origin_line = f" * Origin: {text} ({from_address})"
 
     return f"--- {PRODUCT}\n{origin_line}\n"
+
 
 def with_tear_origin(
     body_text: str,

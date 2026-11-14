@@ -13,6 +13,7 @@ from golded.ui.status import StatusBar
 from golded.ui.title import area_title_line
 from golded.ui.write_message import open_write_screen
 
+
 class MessageListScreen(ListScreen):
     TABLE_ID = "messages"
     PAGEBAR_BORDER = "msg-border"
@@ -111,7 +112,7 @@ class MessageListScreen(ListScreen):
         self.__session = session
 
     def compose(self) -> ComposeResult:
-        yield from self.compose_list(title_markup = True)
+        yield from self.compose_list(title_markup=True)
 
     def action_go_back(self) -> None:
         self.dismiss()
@@ -146,7 +147,7 @@ class MessageListScreen(ListScreen):
         if current is not None:
             self.select_msgno(current)
 
-    def after_message_view(self, result = None) -> None:
+    def after_message_view(self, result=None) -> None:
         if result is not None:
             self.reload_messages()
             self.__session.select_message(result)
@@ -161,7 +162,7 @@ class MessageListScreen(ListScreen):
         self.update_subject_line()
         self.sync_pagebar()
 
-    def after_write(self, result = None) -> None:
+    def after_write(self, result=None) -> None:
         self.reload_messages()
 
         if result is not None:
@@ -177,11 +178,11 @@ class MessageListScreen(ListScreen):
 
         table = self.table()
         table.cursor_type = "row"
-        table.add_column("Msg", width = 5)
-        table.add_column("From", width = 20)
-        table.add_column("To", width = 20)
-        table.add_column("Subject", width = 38)
-        table.add_column("Written", width = 9)
+        table.add_column("Msg", width=5)
+        table.add_column("From", width=20)
+        table.add_column("To", width=20)
+        table.add_column("Subject", width=38)
+        table.add_column("Written", width=9)
 
         self.fill_messages()
         self.call_after_refresh(self.fit_layout)
@@ -223,7 +224,7 @@ class MessageListScreen(ListScreen):
         for index in range(table.row_count):
             row = table.get_row_at(index)
             if int(row[0]) == msgno:
-                table.move_cursor(row = index)
+                table.move_cursor(row=index)
                 self.update_subject_line()
                 self.sync_pagebar()
                 return

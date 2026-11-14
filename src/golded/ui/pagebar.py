@@ -3,6 +3,7 @@
 from textual.containers import Vertical
 from textual.widgets import DataTable, Static
 
+
 def fit_list_end(
     table: DataTable,
     main: Vertical,
@@ -28,6 +29,7 @@ def fit_list_end(
         end.update("")
         end.styles.display = "none"
         pad.styles.display = "none"
+
 
 def paint_pagebar(
     pagebar: Static,

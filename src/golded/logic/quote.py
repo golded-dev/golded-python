@@ -1,5 +1,6 @@
 """Classic GoldED FL quote initials."""
 
+
 def quote_initials(from_name: str) -> str:
     words = from_name.split()
     letters = []
@@ -18,11 +19,14 @@ def quote_initials(from_name: str) -> str:
 
     return letters[0] + letters[-1]
 
+
 def _is_origin_line(line: str) -> bool:
     return line.startswith(" * Origin: ")
 
+
 def _is_tearline_line(line: str) -> bool:
     return line.startswith("--- ")
+
 
 def _trailing_tagline_start(lines: list[str]) -> int | None:
     index = len(lines) - 1
@@ -42,6 +46,7 @@ def _trailing_tagline_start(lines: list[str]) -> int | None:
 
     return tear_index
 
+
 def body_without_tearline(body_text: str) -> str:
     lines = body_text.splitlines()
     start = _trailing_tagline_start(lines)
@@ -51,6 +56,7 @@ def body_without_tearline(body_text: str) -> str:
 
     return "\n".join(lines[:start])
 
+
 def split_body_at_tagline(body_text: str) -> tuple[str, str]:
     lines = body_text.splitlines()
     start = _trailing_tagline_start(lines)
@@ -59,6 +65,7 @@ def split_body_at_tagline(body_text: str) -> tuple[str, str]:
         return body_text, ""
 
     return "\n".join(lines[:start]), "\n".join(lines[start:])
+
 
 def has_golded_tagline(body_text: str) -> bool:
     lines = body_text.splitlines()
@@ -75,6 +82,7 @@ def has_golded_tagline(body_text: str) -> bool:
         return False
 
     return lines[index].startswith("--- GoldED")
+
 
 def quote_body(from_name: str, body_text: str) -> str:
     initials = quote_initials(from_name)
@@ -95,12 +103,14 @@ def quote_body(from_name: str, body_text: str) -> str:
 
     return "\n".join(lines) + "\n"
 
+
 def first_name(full_name: str) -> str:
     words = full_name.split()
     if len(words) == 0:
         return ""
 
     return words[0]
+
 
 def reply_intro(from_name: str, body_for_quote: str) -> str:
     name = first_name(from_name)

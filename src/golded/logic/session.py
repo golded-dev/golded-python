@@ -9,6 +9,7 @@ from golded.logic.tear_origin import with_tear_origin
 from golded.logic.thread_tree import ThreadRow, build_thread_rows
 from golded.logic.user_config import UserConfig
 
+
 class Session:
     def __init__(
         self,
@@ -195,15 +196,15 @@ class Session:
         self.__draft_area = self.__selected_area
 
         self.__draft_message = OutgoingMessage(
-            from_name = self.__user.from_name,
-            to_name = to_name,
-            subject = "",
-            body_text = with_tear_origin(
+            from_name=self.__user.from_name,
+            to_name=to_name,
+            subject="",
+            body_text=with_tear_origin(
                 "",
                 self.__user.origin,
                 self.__user.from_address,
             ),
-            from_address = self.__user.from_address,
+            from_address=self.__user.from_address,
         )
 
     def start_reply_draft(
@@ -226,17 +227,17 @@ class Session:
         self.__draft_area = self.__selected_area
 
         self.__draft_message = OutgoingMessage(
-            from_name = self.__user.from_name,
-            to_name = message.from_name,
-            subject = reply_subject(subject_for_reply),
-            body_text = with_tear_origin(
+            from_name=self.__user.from_name,
+            to_name=message.from_name,
+            subject=reply_subject(subject_for_reply),
+            body_text=with_tear_origin(
                 body,
                 self.__user.origin,
                 self.__user.from_address,
             ),
-            reply_to_msgno = message.msgno,
-            from_address = self.__user.from_address,
-            to_address = message.from_address,
+            reply_to_msgno=message.msgno,
+            from_address=self.__user.from_address,
+            to_address=message.from_address,
         )
 
     def set_draft_message(self, message: OutgoingMessage) -> None:
@@ -271,17 +272,17 @@ class Session:
         draft = self.__draft_message
 
         message = OutgoingMessage(
-            from_name = draft.from_name,
-            to_name = draft.to_name,
-            subject = draft.subject,
-            body_text = with_tear_origin(
+            from_name=draft.from_name,
+            to_name=draft.to_name,
+            subject=draft.subject,
+            body_text=with_tear_origin(
                 draft.body_text,
                 self.__user.origin,
                 draft.from_address,
             ),
-            reply_to_msgno = draft.reply_to_msgno,
-            from_address = draft.from_address,
-            to_address = draft.to_address,
+            reply_to_msgno=draft.reply_to_msgno,
+            from_address=draft.from_address,
+            to_address=draft.to_address,
         )
 
         msgno = self.__store.append(self.__draft_area, message)

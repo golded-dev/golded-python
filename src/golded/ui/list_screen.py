@@ -8,6 +8,7 @@ from textual.widgets import DataTable, Static
 from golded.ui.pagebar import fit_list_end, paint_pagebar
 from golded.ui.status import StatusBar
 
+
 class ListScreen(Screen):
     TABLE_ID = "list"
     PAGEBAR_BORDER = "border"
@@ -24,21 +25,21 @@ class ListScreen(Screen):
         self.sync_pagebar()
 
     def compose_list(self, title_markup: bool = False) -> ComposeResult:
-        yield Static("", id = "title", markup = title_markup)
+        yield Static("", id="title", markup=title_markup)
         yield Horizontal(
             Vertical(
-                DataTable(id = self.TABLE_ID),
-                Static("", id = "list-end"),
-                Static("", id = "list-pad"),
-                id = "list-main",
+                DataTable(id=self.TABLE_ID),
+                Static("", id="list-end"),
+                Static("", id="list-pad"),
+                id="list-main",
             ),
             Vertical(
-                Static("┐", id = "pagebar-top"),
-                Static("", id = "pagebar"),
-                Static("┘", id = "pagebar-bot"),
-                id = "pagebar-col",
+                Static("┐", id="pagebar-top"),
+                Static("", id="pagebar"),
+                Static("┘", id="pagebar-bot"),
+                id="pagebar-col",
             ),
-            id = "list-frame",
+            id="list-frame",
         )
         yield StatusBar()
 

@@ -1,5 +1,6 @@
 """GoldED-style area title bar."""
 
+
 def area_title_line(
     area_name: str,
     area_code: str,

@@ -9,13 +9,14 @@ from golded_ftn import OutgoingMessage
 from golded.data.area import Area
 from golded.data.store import create_message_store, open_message_store
 
+
 class MessageStoreTests(unittest.TestCase):
     def test_append_and_reread(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "test.sqlite3"
             store = create_message_store(
                 path,
-                areas = (
+                areas=(
                     Area("EMPTY", "Empty"),
                     Area("MAIL", "Mail"),
                 ),
@@ -31,10 +32,10 @@ class MessageStoreTests(unittest.TestCase):
             msgno = store.append(
                 "MAIL",
                 OutgoingMessage(
-                    from_name = "Odinn",
-                    to_name = "All",
-                    subject = "Layer check",
-                    body_text = "Stored through MessageStore.",
+                    from_name="Odinn",
+                    to_name="All",
+                    subject="Layer check",
+                    body_text="Stored through MessageStore.",
                 ),
             )
             self.assertEqual(msgno, 1)
@@ -47,6 +48,7 @@ class MessageStoreTests(unittest.TestCase):
 
             one = again.message("MAIL", 1)
             self.assertEqual(one.body_text, "Stored through MessageStore.")
+
 
 if __name__ == "__main__":
     unittest.main()

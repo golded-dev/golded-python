@@ -9,6 +9,7 @@ from golded.logic.user_config import UserConfig
 from golded.logic.version import PRODUCT
 from seed import seed_database
 
+
 class SessionTests(unittest.TestCase):
     def setUp(self):
         self.__tmp = tempfile.TemporaryDirectory()
@@ -105,7 +106,7 @@ class SessionTests(unittest.TestCase):
 
     def test_threaded_list_default_from_config(self):
         store = open_message_store(f"{self.__tmp.name}/test.sqlite3")
-        session = Session(store, UserConfig(threaded_list = True))
+        session = Session(store, UserConfig(threaded_list=True))
         self.assertTrue(session.threaded_list())
         session.select_area("THREADED")
         names = [m.from_name for m in session.messages()]
@@ -172,10 +173,10 @@ class SessionTests(unittest.TestCase):
         self.session.select_area("ONE")
         self.session.start_draft_message()
         draft_message = OutgoingMessage(
-            from_name = "Odinn",
-            to_name = "All",
-            subject = "Draft save",
-            body_text = "Hello",
+            from_name="Odinn",
+            to_name="All",
+            subject="Draft save",
+            body_text="Hello",
         )
         self.session.set_draft_message(draft_message)
 
@@ -196,7 +197,9 @@ class SessionTests(unittest.TestCase):
         self.assertEqual(current.subject, "Draft save")
         self.assertIn("Hello", current.body_text)
         self.assertIn(f"--- {PRODUCT}", current.body_text)
-        self.assertIn(" * Origin: Where we're going, we don't need roads.", current.body_text)
+        self.assertIn(
+            " * Origin: Where we're going, we don't need roads.", current.body_text
+        )
 
     def test_save_draft_rejects_empty_fields(self):
         self.session.select_area("ONE")
@@ -234,7 +237,9 @@ class SessionTests(unittest.TestCase):
         self.assertIn("A> ---- skillelinje", draft.body_text)
         self.assertIn("A> Efter", draft.body_text)
         self.assertIn(f"--- {PRODUCT}", draft.body_text)
-        self.assertIn(" * Origin: Where we're going, we don't need roads.", draft.body_text)
+        self.assertIn(
+            " * Origin: Where we're going, we don't need roads.", draft.body_text
+        )
         self.assertNotIn("Old", draft.body_text)
         self.assertNotIn(" * Origin: old", draft.body_text)
 
@@ -276,7 +281,7 @@ class SessionTests(unittest.TestCase):
         store = open_message_store(f"{self.__tmp.name}/test.sqlite3")
         session = Session(
             store,
-            UserConfig(from_name = "Odinn", from_address = address),
+            UserConfig(from_name="Odinn", from_address=address),
         )
         session.select_area("ONE")
         session.start_draft_message()
@@ -297,10 +302,10 @@ class SessionTests(unittest.TestCase):
         self.session.start_draft_message()
         self.session.set_draft_message(
             OutgoingMessage(
-                from_name = "Odinn",
-                to_name = "Alice",
-                subject = "Netmail try",
-                body_text = "Hello",
+                from_name="Odinn",
+                to_name="Alice",
+                subject="Netmail try",
+                body_text="Hello",
             )
         )
 
@@ -317,12 +322,12 @@ class SessionTests(unittest.TestCase):
         self.session.start_draft_message()
         self.session.set_draft_message(
             OutgoingMessage(
-                from_name = "Odinn",
-                to_name = "Alice",
-                subject = "Netmail try",
-                body_text = "Hello",
-                from_address = FtnAddress.from_string("2:236/777"),
-                to_address = address,
+                from_name="Odinn",
+                to_name="Alice",
+                subject="Netmail try",
+                body_text="Hello",
+                from_address=FtnAddress.from_string("2:236/777"),
+                to_address=address,
             )
         )
 
@@ -334,6 +339,7 @@ class SessionTests(unittest.TestCase):
     def test_area_name(self):
         self.assertEqual(self.session.area_name("ONE"), "Area with one message")
         self.assertEqual(self.session.area_name("MISSING"), "MISSING")
+
 
 if __name__ == "__main__":
     unittest.main()

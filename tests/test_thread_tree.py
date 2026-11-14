@@ -2,18 +2,20 @@ import unittest
 
 from golded.logic.thread_tree import build_thread_rows, format_branch_prefix
 
+
 class FakeMessage:
-    def __init__(self, msgno, reply_to_msgno = None, from_name = "") -> None:
+    def __init__(self, msgno, reply_to_msgno=None, from_name="") -> None:
         self.msgno = msgno
         self.reply_to_msgno = reply_to_msgno
         self.from_name = from_name
+
 
 class ThreadTreeTests(unittest.TestCase):
     def test_empty(self):
         self.assertEqual(build_thread_rows([]), [])
 
     def test_single_message(self):
-        rows = build_thread_rows([FakeMessage(1, from_name = "Alice")])
+        rows = build_thread_rows([FakeMessage(1, from_name="Alice")])
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0].message.msgno, 1)
         self.assertEqual(rows[0].branch_path, [])
@@ -26,7 +28,7 @@ class ThreadTreeTests(unittest.TestCase):
         # │  └─ Diana
         # └─ Clara
         messages = [
-            FakeMessage(1, from_name = "Alice"),
+            FakeMessage(1, from_name="Alice"),
             FakeMessage(2, 1, "Bob"),
             FakeMessage(3, 1, "Clara"),
             FakeMessage(4, 2, "Diana"),
@@ -44,8 +46,8 @@ class ThreadTreeTests(unittest.TestCase):
 
     def test_multiple_roots_keep_load_order(self):
         messages = [
-            FakeMessage(1, from_name = "A"),
-            FakeMessage(2, from_name = "B"),
+            FakeMessage(1, from_name="A"),
+            FakeMessage(2, from_name="B"),
             FakeMessage(3, 1, "A2"),
         ]
         rows = build_thread_rows(messages)
@@ -90,6 +92,7 @@ class ThreadTreeTests(unittest.TestCase):
         rows = build_thread_rows([FakeMessage(1, 1, "Loop")])
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0].branch_path, [])
+
 
 if __name__ == "__main__":
     unittest.main()

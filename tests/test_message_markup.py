@@ -4,10 +4,12 @@ from golded.logic.display_text import literal_text
 from textual.app import App, ComposeResult
 from textual.widgets import Static
 
+
 class MarkupScreen(App):
     def compose(self) -> ComposeResult:
-        yield Static("", id = "meta", markup = False)
-        yield Static("", id = "body", markup = False)
+        yield Static("", id="meta", markup=False)
+        yield Static("", id="body", markup=False)
+
 
 class MessageMarkupTests(unittest.IsolatedAsyncioTestCase):
     async def test_static_shows_literal_brackets(self) -> None:
@@ -28,6 +30,7 @@ class MessageMarkupTests(unittest.IsolatedAsyncioTestCase):
     def test_literal_text_is_not_markup(self) -> None:
         text = literal_text("[b]x[/b]")
         self.assertEqual(text.plain, "[b]x[/b]")
+
 
 if __name__ == "__main__":
     unittest.main()

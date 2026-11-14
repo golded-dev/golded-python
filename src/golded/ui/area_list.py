@@ -10,6 +10,7 @@ from golded.ui.list_screen import ListScreen
 from golded.ui.message_list import MessageListScreen
 from golded.ui.status import StatusBar
 
+
 class AreaListScreen(ListScreen):
     TABLE_ID = "areas"
     PAGEBAR_BORDER = "border"
@@ -105,15 +106,15 @@ class AreaListScreen(ListScreen):
         self.__rows = []
 
     def compose(self) -> ComposeResult:
-        yield from self.compose_list(title_markup = False)
+        yield from self.compose_list(title_markup=False)
 
     def on_mount(self) -> None:
         table = self.table()
         table.cursor_type = "row"
-        table.add_column(Text("Area", justify = "right"), width = 4)
-        table.add_column("Description", width = 40)
-        table.add_column(Text("Msgs", justify = "right"), width = 6)
-        table.add_column("EchoID", width = 16)
+        table.add_column(Text("Area", justify="right"), width=4)
+        table.add_column("Description", width=40)
+        table.add_column(Text("Msgs", justify="right"), width=6)
+        table.add_column("EchoID", width=16)
 
         self.reload_rows()
         self.show_title()
@@ -191,14 +192,14 @@ class AreaListScreen(ListScreen):
         for number, name, count, code in self.__rows:
             if self.area_matches(name, code):
                 table.add_row(
-                    Text(str(number), justify = "right"),
+                    Text(str(number), justify="right"),
                     name,
-                    Text(str(count), justify = "right"),
+                    Text(str(count), justify="right"),
                     code,
                 )
 
         if table.row_count > 0:
-            table.move_cursor(row = 0)
+            table.move_cursor(row=0)
 
     def fit_layout(self) -> None:
         self.fit_columns()
