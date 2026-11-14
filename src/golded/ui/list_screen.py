@@ -46,6 +46,13 @@ class ListScreen(Screen[None]):
         )
         yield StatusBar()
 
+    def follow_table_scroll(self) -> None:
+        # Mouse-wheel scrolling moves the viewport without moving the cursor.
+        self.watch(self.table(), "scroll_y", self.on_table_scroll_y)
+
+    def on_table_scroll_y(self, old_value: float, new_value: float) -> None:
+        self.sync_pagebar()
+
     def sync_pagebar(self) -> None:
         table = self.table()
         paint_pagebar(

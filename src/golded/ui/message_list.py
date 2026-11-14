@@ -176,6 +176,7 @@ class MessageListScreen(ListScreen):
         self.sync_pagebar()
 
     def on_mount(self) -> None:
+        self.follow_table_scroll()
         self.show_title()
 
         table = self.table()

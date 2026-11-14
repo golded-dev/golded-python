@@ -3,9 +3,9 @@
 import tempfile
 import unittest
 
-from golded_ftn import FtnAddress
+from golded_ftn import FtnAddress, OutgoingMessage
 from textual.pilot import Pilot
-from textual.widgets import Input, TextArea
+from textual.widgets import Input, Static, TextArea
 
 from golded.data.store import open_message_store
 from golded.logic.session import Session
@@ -26,6 +26,7 @@ class AppSmokeTests(unittest.IsolatedAsyncioTestCase):
         self.__tmp = tempfile.TemporaryDirectory()
         path = f"{self.__tmp.name}/test.sqlite3"
         seed_database(path)
+        self.path = path
         config = UserConfig(
             from_name="Tester", from_address=FtnAddress.from_string("2:236/777")
         )
@@ -74,6 +75,29 @@ class AppSmokeTests(unittest.IsolatedAsyncioTestCase):
             await pilot.press("escape")
             await pilot.pause()
             self.assertIsInstance(self.app.screen, AreaListScreen)
+
+    async def test_pagebar_follows_list_scroll(self) -> None:
+        store = open_message_store(self.path)
+        for number in range(40):
+            store.append(
+                "THREADED",
+                OutgoingMessage(
+                    from_name="A", to_name="B", subject=f"s{number}", body_text="x"
+                ),
+            )
+
+        async with self.app.run_test(size=(100, 15)) as pilot:
+            await self.open_area(pilot, "thr")
+            screen = self.app.screen
+            assert isinstance(screen, MessageListScreen)
+            pagebar = screen.query_one("#pagebar", Static)
+            at_top = str(pagebar.content)
+
+            # What the mouse wheel does: the viewport moves, the cursor stays.
+            screen.table().scroll_to(y=30, animate=False)
+            await pilot.pause()
+            self.assertEqual(screen.table().cursor_row, 0)
+            self.assertNotEqual(str(pagebar.content), at_top)
 
     async def test_toggle_theme(self) -> None:
         async with self.app.run_test(size=SIZE) as pilot:

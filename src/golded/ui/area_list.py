@@ -110,6 +110,7 @@ class AreaListScreen(ListScreen):
         yield from self.compose_list(title_markup=False)
 
     def on_mount(self) -> None:
+        self.follow_table_scroll()
         table = self.table()
         table.cursor_type = "row"
         table.add_column(Text("Area", justify="right"), width=4)
