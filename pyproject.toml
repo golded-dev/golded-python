@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{name = "Odinn Adalsteinsson"}]
+authors = [{name = "GoldED.dev contributors"}]
 dependencies = [
     "golded-ftn>=1.5.1,<2",
     "golded-ftn-sqlite>=1.1.0,<2",

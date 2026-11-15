@@ -44,8 +44,8 @@ Rules that keep it out:
 | D3 | Adopt Ruff format | Yes. It rewrites the `keyword = value` course style once; do it in its own commit so the diff is reviewable as "format only". |
 | D4 | mypy strictness | `strict = true`, as in the siblings. Textual typing may need a few targeted ignores; each one gets a reason. |
 | D5 | Python floor | 3.12, as in the siblings. CI proves it. |
-| D6 | LICENSE copyright holder | `GoldED.dev contributors`, as in the siblings. Odinn's call as the sole author. |
-| D7 | Splash identity: `RELEASE_NAME` "Stille og roligt™ edition", `COPYRIGHT_YEARS` "1990 - 2026", `AUTHOR`, countdown 10 s | Keep as product identity; set the countdown deliberately (10 in the submission, 60 in the uncommitted course checkout). |
+| D6 | LICENSE copyright holder | **Decided 2026-11-15:** `GoldED.dev contributors` in LICENSE and `authors`, as in the siblings. The splash `AUTHOR` stays Odinn (D7). |
+| D7 | Splash identity: `RELEASE_NAME` "Stille og roligt™ edition", `COPYRIGHT_YEARS` "1990 - 2026", `AUTHOR`, countdown 10 s | **Decided 2026-11-15:** keep the identity. The countdown becomes `splash_seconds` in `golded.toml` (default 10, `0` skips the splash, anything but a whole number of 0 or more is a startup error). This is the one new option in 1.0.0, added at Odinn's request. |
 | D8 | Version | 1.0.0. The config format, CLI options and key bindings become the public surface. |
 | D9 | Manual hosting | `site/` in this repo, published to GitHub Pages by a pinned workflow; linked from the suite docs (`golded-ftn-python-docs`). |
 
