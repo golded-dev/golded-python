@@ -202,6 +202,14 @@ golded with `MarkupError`; fixed in its own commit.
 4. Recheck that `golded` is still free on PyPI immediately before release.
 5. Write `RELEASE-SHA256.txt` for wheel and sdist.
 
+Status 2026-11-15, on `ad2fa6b`: steps 1–4 pass. Gates on Python 3.12.16 and
+3.14.10 in fresh envs; two builds give identical archives; `twine check` and
+`verify_distribution.py` pass on both; the installed wheel runs in a real pty
+(splash, area list, `Esc`, exit 0); `golded` is still 404 on PyPI. Step 5 waits:
+the sdist includes `docs/`, so the manual terminal checks and any fix the first
+Windows CI run needs would change it. `RELEASE-SHA256.txt` and the CHANGELOG
+date are written on the frozen release commit, after CI is green on all nine jobs.
+
 ## Phase 8 — Publication (each step needs an explicit go)
 
 1. Create `golded-dev/golded-python` on GitHub (public) and push `main`.
