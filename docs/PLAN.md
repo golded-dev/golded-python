@@ -186,6 +186,13 @@ and keyboard-only navigation are not checked yet.
 - `.gitignore` extended with `.venv/`, `dist/`, caches, `site/` build output
   only if generated pages are not committed (decide with D9; the siblings commit them).
 
+Status 2026-11-15: done. README is short and links the manual; the keys tables
+moved to the manual, with the write-screen notes added to the keys page.
+`site/` stays committed (D9), so `.gitignore` gains only `*.egg-info/` and the
+agent-compose backups. `AGENTS.md` uses the siblings' setup (`project.md` plus the
+Ash persona). While checking SECURITY.md, an area name such as `[/b]` crashed
+golded with `MarkupError`; fixed in its own commit.
+
 ## Phase 7 — Release verification
 
 1. All Phase 3 gates on the release commit.

@@ -600,8 +600,12 @@ KEYS: tuple[tuple[str, str, str, tuple[tuple[str, str, tuple[str, ...]], ...]], 
     (
         "write",
         "Write and reply",
-        "Cmd+S reaches the app only in terminals that pass it on; F2 and Ctrl+S "
-        "always work.",
+        "A new echomail message is addressed to All. Netmail needs the "
+        "recipient's FTN address in the To address field before it saves. A "
+        "reply starts with Hello and the author's first name, then the quoted "
+        "body with their initials (Alice Bob gives AB>), without the tearline and "
+        "Origin. Cmd+S reaches the app only in terminals that pass it on; F2 and "
+        "Ctrl+S always work.",
         (
             (
                 "F2 / Ctrl+S / Cmd+S",
