@@ -224,6 +224,13 @@ date are written on the frozen release commit, after CI is green on all nine job
 6. Verify from the public index: `uvx golded --help` without wheelhouse.
 7. Link from the suite docs (Phase 5.6) once the manual is live.
 
+Status 2026-11-15: step 1 done. `golded-dev/golded-python` is public; CI on
+`5966064` is green on all nine jobs (Windows needed `python.exe` in
+`verify_distribution.py`; fail-fast is off). Step 2 partly done: the `pypi`
+environment requires Odinn's review and deploys only from `main`; `publish.yml`
+is copied from `golded-ftn-tools`. The PyPI Trusted Publisher needs Odinn's
+pypi.org login.
+
 ## Out of scope (later)
 
 Everything that changes what the program can do: other message-base formats
