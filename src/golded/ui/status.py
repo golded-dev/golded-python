@@ -48,7 +48,8 @@ class StatusBar(Horizontal):
 
     def compose(self) -> ComposeResult:
         yield Static(f" {PRODUCT} | ", id="status-left")
-        yield Static("", id="status-middle")
+        # Carries area codes and error text, which may contain [brackets].
+        yield Static("", id="status-middle", markup=False)
         yield Static("", id="status-right")
 
     def on_mount(self) -> None:

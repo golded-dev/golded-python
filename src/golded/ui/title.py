@@ -1,5 +1,7 @@
 """GoldED-style area title bar."""
 
+from rich.text import Text
+
 
 def area_title_line(
     area_name: str,
@@ -7,7 +9,7 @@ def area_title_line(
     width: int,
     line_color: str,
     title_color: str,
-) -> str:
+) -> Text:
     if width < 40:
         width = 80
 
@@ -17,10 +19,11 @@ def area_title_line(
     if fill < 1:
         fill = 1
 
-    return (
-        f"[{line_color}]─[/]"
-        f"[{title_color}]{title_left}[/]"
-        f"[{line_color}]{'─' * fill}[/]"
-        f"[{title_color}]{title_right}[/]"
-        f"[{line_color}]─[/]"
+    # Text, not markup: area names come from the base and may contain [brackets].
+    return Text.assemble(
+        ("─", line_color),
+        (title_left, title_color),
+        ("─" * fill, line_color),
+        (title_right, title_color),
+        ("─", line_color),
     )

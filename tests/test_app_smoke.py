@@ -7,7 +7,8 @@ from golded_ftn import FtnAddress, OutgoingMessage
 from textual.pilot import Pilot
 from textual.widgets import Input, Static, TextArea
 
-from golded.data.store import open_message_store
+from golded.data.area import Area
+from golded.data.store import create_message_store, open_message_store
 from golded.logic.session import Session
 from golded.logic.user_config import UserConfig
 from golded.ui.app import GoldED
@@ -69,6 +70,24 @@ class AppSmokeTests(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             self.assertIsInstance(app.screen, AreaListScreen)
             self.assertEqual(len(app.screen_stack), 2)
+
+    async def test_brackets_in_area_names_are_text(self) -> None:
+        path = f"{self.__tmp.name}/brackets.sqlite3"
+        name = "[/b] Odd [reverse]name"
+        store = create_message_store(path, (Area("[ECHO]", name),))
+        store.append(
+            "[ECHO]",
+            OutgoingMessage(from_name="A", to_name="All", subject="s", body_text="b\n"),
+        )
+        app = GoldED(Session(open_message_store(path), UserConfig(splash_seconds=0)))
+        async with app.run_test(size=SIZE) as pilot:
+            await pilot.pause()
+            await pilot.press("enter")
+            await pilot.pause()
+            self.assertIsInstance(app.screen, MessageListScreen)
+            title = app.screen.query_one("#title", Static).render()
+            self.assertIn(f" {name} ", str(title))
+            self.assertIn(" [ECHO] ", str(title))
 
     async def test_read_and_step_through_messages(self) -> None:
         async with self.app.run_test(size=SIZE) as pilot:

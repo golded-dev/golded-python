@@ -6,6 +6,7 @@ from textual.app import ComposeResult
 from textual.geometry import Size
 from textual.widgets import DataTable, Static
 
+from golded.logic.display_text import literal_text
 from golded.logic.session import Session
 from golded.ui.list_screen import ListScreen
 from golded.ui.message_list import MessageListScreen
@@ -195,9 +196,10 @@ class AreaListScreen(ListScreen):
             if self.area_matches(name, code):
                 table.add_row(
                     Text(str(number), justify="right"),
-                    name,
+                    literal_text(name),
                     Text(str(count), justify="right"),
-                    code,
+                    literal_text(code),
+                    key=code,
                 )
 
         if table.row_count > 0:
@@ -257,7 +259,7 @@ class AreaListScreen(ListScreen):
         if event.data_table.id != "areas":
             return
 
-        row = event.data_table.get_row(event.row_key)
-        area = row[3]
+        area = event.row_key.value
+        assert area is not None, "area rows are keyed by area code"
         self.__session.select_area(area)
         self.app.push_screen(MessageListScreen(self.__session))
