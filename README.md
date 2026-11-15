@@ -49,9 +49,10 @@ database = "messages.sqlite3"
 origin = "Where we're going, we don't need roads."
 theme = "dark"
 threaded_list = false
+splash_seconds = 10
 ```
 
-`from_name` and `from_address` are filled in automatically when you write or reply. `origin` becomes ` * Origin: …` below the tearline; the default is Doc Brown's "Where we're going, we don't need roads." `theme` is `dark` or `light` (default `dark`). `threaded_list` starts the message list as a thread tree (`true`) or flat (`false`, default); `t` still toggles it inside the app. An unknown `theme`, or a `threaded_list` that is not a TOML boolean (`"no"` is a string), stops `golded` at startup with an error. Product name and version are constants in the code. `--database` and `--theme` on the command line override the config.
+`from_name` and `from_address` are filled in automatically when you write or reply. `origin` becomes ` * Origin: …` below the tearline; the default is Doc Brown's "Where we're going, we don't need roads." `theme` is `dark` or `light` (default `dark`). `threaded_list` starts the message list as a thread tree (`true`) or flat (`false`, default); `t` still toggles it inside the app. `splash_seconds` is how long the splash screen counts down (default `10`); `0` skips it. An unknown `theme`, a `threaded_list` that is not a TOML boolean (`"no"` is a string), or a `splash_seconds` that is not a whole number of 0 or more stops `golded` at startup with an error. Product name and version are constants in the code. `--database` and `--theme` on the command line override the config.
 
 ## Options
 
@@ -77,7 +78,7 @@ threaded_list = false
 
 | Key | Action |
 | --- | --- |
-| Any key | Continue to the area list (otherwise after a 10–1 countdown) |
+| Any key | Continue to the area list (otherwise after the `splash_seconds` countdown, default 10) |
 
 **Area list**
 

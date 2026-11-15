@@ -50,6 +50,26 @@ class AppSmokeTests(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             self.assertIsInstance(self.app.screen, AreaListScreen)
 
+    def app_with_splash_seconds(self, seconds: int) -> GoldED:
+        config = UserConfig(splash_seconds=seconds)
+        return GoldED(Session(open_message_store(self.path), config), "dark")
+
+    async def test_splash_counts_down_from_config(self) -> None:
+        app = self.app_with_splash_seconds(1)
+        async with app.run_test(size=SIZE) as pilot:
+            await pilot.pause()
+            prompt = app.screen.query_one("#prompt", Static)
+            self.assertTrue(str(prompt.content).endswith("wait  1"))
+            await pilot.pause(1.5)
+            self.assertIsInstance(app.screen, AreaListScreen)
+
+    async def test_zero_splash_seconds_skips_splash(self) -> None:
+        app = self.app_with_splash_seconds(0)
+        async with app.run_test(size=SIZE) as pilot:
+            await pilot.pause()
+            self.assertIsInstance(app.screen, AreaListScreen)
+            self.assertEqual(len(app.screen_stack), 2)
+
     async def test_read_and_step_through_messages(self) -> None:
         async with self.app.run_test(size=SIZE) as pilot:
             await self.open_area(pilot, "thr")

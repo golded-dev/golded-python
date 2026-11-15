@@ -49,6 +49,9 @@ class Session:
     def draft_area(self) -> str | None:
         return self.__draft_area
 
+    def splash_seconds(self) -> int:
+        return self.__user.splash_seconds
+
     def threaded_list(self) -> bool:
         return self.__threaded_list
 

@@ -35,6 +35,7 @@ Covered by `tests/test_cli.py` except where noted.
 | `--config` names a directory | ignored, defaults used | unchanged |
 | `threaded_list = "no"` | read with `bool()`, so any non-empty string meant `true` | `Cannot read config …: threaded_list must be true or false, not 'no'`, exit 1 |
 | `theme = "neon"` | fell back to `dark` without a message | `Cannot read config …: theme must be one of dark, light, not 'neon'`, exit 1 |
+| `splash_seconds = -1` (option added 2026-11-15) | did not exist; countdown fixed at 10 | `Cannot read config …: splash_seconds must be a whole number of 0 or more, not -1`, exit 1 |
 
 The last two were accepted silently before; Odinn decided on 2026-11-14 that they
 are errors. Covered by `tests/test_user_config.py`.

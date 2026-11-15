@@ -117,7 +117,9 @@ class GoldED(App[None]):
 
     def on_mount(self) -> None:
         self.push_screen(AreaListScreen(self.__session))
-        self.push_screen(SplashScreen())
+        seconds = self.__session.splash_seconds()
+        if seconds > 0:
+            self.push_screen(SplashScreen(seconds))
 
     def action_toggle_theme(self) -> None:
         self.theme = "dark" if self.theme == "light" else "light"

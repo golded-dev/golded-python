@@ -6,6 +6,7 @@ from golded_ftn import FtnAddress
 
 from golded.logic.tear_origin import DEFAULT_ORIGIN
 from golded.logic.user_config import (
+    DEFAULT_SPLASH_SECONDS,
     DEFAULT_THEME,
     DEFAULT_THREADED_LIST,
     load_user_config,
@@ -21,6 +22,7 @@ class UserConfigTests(unittest.TestCase):
         self.assertEqual(config.origin, DEFAULT_ORIGIN)
         self.assertEqual(config.theme, DEFAULT_THEME)
         self.assertEqual(config.threaded_list, DEFAULT_THREADED_LIST)
+        self.assertEqual(config.splash_seconds, DEFAULT_SPLASH_SECONDS)
 
     def test_loads_toml(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -31,7 +33,8 @@ class UserConfigTests(unittest.TestCase):
                 'database = "messages.sqlite3"\n'
                 'origin = "Coffee and packets"\n'
                 'theme = "light"\n'
-                "threaded_list = true\n",
+                "threaded_list = true\n"
+                "splash_seconds = 0\n",
                 encoding="utf-8",
             )
             config = load_user_config(path)
@@ -42,6 +45,7 @@ class UserConfigTests(unittest.TestCase):
         self.assertEqual(config.origin, "Coffee and packets")
         self.assertEqual(config.theme, "light")
         self.assertTrue(config.threaded_list)
+        self.assertEqual(config.splash_seconds, 0)
 
     def load_text(self, text: str) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -56,6 +60,14 @@ class UserConfigTests(unittest.TestCase):
     def test_threaded_list_must_be_boolean(self) -> None:
         with self.assertRaisesRegex(ValueError, "threaded_list must be true or false"):
             self.load_text('threaded_list = "no"\n')
+
+    def test_splash_seconds_must_be_a_whole_number(self) -> None:
+        for value in ("-1", "2.5", '"10"', "true"):
+            with (
+                self.subTest(value=value),
+                self.assertRaisesRegex(ValueError, "splash_seconds must be"),
+            ):
+                self.load_text(f"splash_seconds = {value}\n")
 
 
 if __name__ == "__main__":

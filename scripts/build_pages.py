@@ -11,8 +11,8 @@ import html
 from collections.abc import Sequence
 from pathlib import Path
 
+from golded.logic.user_config import DEFAULT_SPLASH_SECONDS
 from golded.logic.version import VERSION
-from golded.ui.splash import COUNTDOWN_SECONDS
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
@@ -263,7 +263,10 @@ def index_page() -> str:
                 "open a base",
                 "golded --database messages.sqlite3\n",
             )
-            + f"<p>The splash screen counts down from {COUNTDOWN_SECONDS}; any key skips it. "
+            + "<p>The splash screen counts down from "
+            f"{DEFAULT_SPLASH_SECONDS} (<code>splash_seconds</code> in "
+            '<a href="config.html">golded.toml</a>'
+            "); any key skips it. "
             "Pick an area with <code>↑</code> <code>↓</code> and "
             "<code>Enter</code>, open a message, and step with <code>←</code> "
             "<code>→</code>. <code>Esc</code> goes back one screen and quits "
@@ -448,6 +451,12 @@ def config_page() -> str:
                         "Start the message list as a thread tree. A TOML boolean; "
                         "<code>t</code> toggles it in the app.",
                     ),
+                    (
+                        "<code>splash_seconds</code>",
+                        f"<code>{DEFAULT_SPLASH_SECONDS}</code>",
+                        "How long the splash screen counts down. A whole number; "
+                        "<code>0</code> skips the splash.",
+                    ),
                 ],
             ),
         ),
@@ -484,9 +493,10 @@ def config_page() -> str:
             "<p>A config <code>golded</code> cannot use stops it at startup with "
             "<code>Cannot read config PATH: …</code> and exit status 1: malformed "
             "TOML, an invalid <code>from_address</code>, an unknown "
-            "<code>theme</code>, or a <code>threaded_list</code> that is not "
+            "<code>theme</code>, a <code>threaded_list</code> that is not "
             '<code>true</code> or <code>false</code> (<code>"no"</code> is a '
-            "string, and an error).</p>",
+            "string, and an error), or a <code>splash_seconds</code> that is "
+            "not a whole number of 0 or more.</p>",
         ),
     ]
     return shell(
@@ -522,7 +532,8 @@ KEYS: tuple[tuple[str, str, str, tuple[tuple[str, str, tuple[str, ...]], ...]], 
         (
             (
                 "Any key",
-                f"Continue to the area list (otherwise after {COUNTDOWN_SECONDS} seconds)",
+                "Continue to the area list (otherwise after "
+                f"{DEFAULT_SPLASH_SECONDS} seconds, or <code>splash_seconds</code>)",
                 (),
             ),
         ),

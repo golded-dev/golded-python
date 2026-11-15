@@ -15,8 +15,6 @@ from golded.logic.version import (
 )
 from golded.ui.logo import LOGO
 
-COUNTDOWN_SECONDS = 10
-
 CREDITS = (
     f"{PRODUCT_DESCRIPTION}\n"
     f"By {AUTHOR}\n"
@@ -97,9 +95,9 @@ class SplashScreen(Screen[None]):
     }
     """
 
-    def __init__(self) -> None:
+    def __init__(self, seconds: int) -> None:
         super().__init__()
-        self.__left = COUNTDOWN_SECONDS
+        self.__left = seconds
         self.__done = False
 
     def compose(self) -> ComposeResult:
