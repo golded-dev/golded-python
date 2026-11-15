@@ -1,5 +1,6 @@
 """Startup errors end with a short message and exit code 1, not a traceback."""
 
+import gc
 import io
 import sqlite3
 import tempfile
@@ -32,6 +33,11 @@ class CliErrorTests(unittest.TestCase):
         self.assertEqual(raised.exception.code, 1)
         run.assert_not_called()
         self.assertNotIn("Traceback", stderr.getvalue())
+        # golded-ftn-sqlite leaves its connection open when the file is not SQLite,
+        # and the traceback behind SystemExit keeps it alive. Windows cannot delete
+        # an open file, so release it before tearDown removes the directory.
+        del raised
+        gc.collect()
         return stderr.getvalue()
 
     def test_missing_database(self) -> None:

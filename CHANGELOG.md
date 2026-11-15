@@ -9,6 +9,7 @@ First public release, from the GoldED.py terminal reader.
 - Flat or threaded message list, subject-thread stepping and display-only mojibake
   repair.
 - Dark and light themes.
+- Linux, macOS and Windows; Windows is tested headless in CI.
 - `golded.toml` for name, FTN address, base, Origin, theme, threaded list and the
   splash countdown (`splash_seconds`, new in this release); `--config`,
   `--database` and `--theme` options.

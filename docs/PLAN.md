@@ -5,7 +5,7 @@ Status: draft 2026-11-13. Nothing is committed or published yet.
 Goal: turn the imported exam project into a release-ready open source package in
 the golded-dev suite. No new features. "Release-ready" means the same bar as the
 `golded-ftn-*-python` packages and `golded-ftn-tools`: installable wheel and sdist,
-CI on Linux/macOS with Python 3.12–3.14, strict checks, a reviewed release
+CI on Linux/macOS/Windows with Python 3.12–3.14 (Windows added 2026-11-15), strict checks, a reviewed release
 checklist, and a static HTML manual in the shared GoldED design.
 
 Template repos: `golded-ftn-tools` (application with an HTML manual, entry point,
@@ -98,7 +98,7 @@ dependency because `ui/area_list.py` and `logic/display_text.py` import it;
 5. `scripts/verify_distribution.py` adapted from `golded-ftn-tools`: build, rebuild
    wheel from sdist, inspect metadata and contents, install outside the checkout,
    run `golded --help` and the headless smoke against the installed wheel.
-6. `.github/workflows/ci.yml`: Ubuntu + macOS × 3.12/3.13/3.14, `uv sync --no-sources`,
+6. `.github/workflows/ci.yml`: Ubuntu + macOS + Windows (from 2026-11-15) × 3.12/3.13/3.14, `uv sync --no-sources`,
    ruff, mypy, pytest, build, `twine check`, verify script. Actions pinned to full SHAs.
 
 Done when: all gates pass locally on 3.12 and 3.14.
@@ -221,4 +221,5 @@ golded with `MarkupError`; fixed in its own commit.
 Everything that changes what the program can do: other message-base formats
 (JAM, Squish, MSG, Hudson), thread view stretch goals, editing/deleting
 messages, search, user-level config locations (`~/.config`), packaging for
-Homebrew, Windows support.
+Homebrew. Windows was moved in on 2026-11-15: CI must pass there, because
+nobody can test it by hand.

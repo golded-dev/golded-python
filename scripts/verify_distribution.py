@@ -62,7 +62,8 @@ def extract_sdist(sdist: Path, work: Path) -> Path:
 
 def check_consumer(candidate: Path, source: Path, env: Path, work: Path) -> None:
     run(["uv", "venv", "--python", sys.executable, str(env)], work)
-    python = str(env / "bin/python")
+    scripts = env / ("Scripts" if os.name == "nt" else "bin")
+    python = str(scripts / "python")
     install = ["uv", "pip", "install", "--python", python, "--no-cache", "--reinstall"]
     if os.environ.get("GOLDED_WHEELHOUSE"):
         install += ["--find-links", os.environ["GOLDED_WHEELHOUSE"]]
@@ -77,7 +78,7 @@ def check_consumer(candidate: Path, source: Path, env: Path, work: Path) -> None
         ],
         work,
     )
-    run([str(env / "bin/golded"), "--help"], work)
+    run([str(scripts / "golded"), "--help"], work)
 
     # Run the sdist's tests, headless app tests included, against the installed
     # wheel. Without src/ on disk, every golded import must come from site-packages.
@@ -88,7 +89,8 @@ def check_consumer(candidate: Path, source: Path, env: Path, work: Path) -> None
 
 
 def main() -> None:
-    project = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]
+    metadata = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    project = tomllib.loads(metadata)["project"]
     (wheel,) = (ROOT / "dist").glob("*.whl")
     (sdist,) = (ROOT / "dist").glob("*.tar.gz")
     check_wheel(wheel, project)
@@ -96,7 +98,7 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="golded-distribution-") as temporary:
         work = Path(temporary)
         source = extract_sdist(sdist, work)
-        config = tomllib.loads((source / "pyproject.toml").read_text())
+        config = tomllib.loads((source / "pyproject.toml").read_text(encoding="utf-8"))
         assert "sources" not in config.get("tool", {}).get("uv", {})
 
         run(["uv", "build", "--no-sources", "--wheel"], source)

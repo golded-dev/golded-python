@@ -229,8 +229,8 @@ def install_section() -> Section:
         )
     body += (
         "<p>The command is <code>golded</code>; the package and import name are "
-        "also <code>golded</code>. It runs on Linux and macOS. Windows is outside "
-        "its test and compatibility promises.</p>"
+        "also <code>golded</code>. It runs on Linux, macOS and Windows; CI tests "
+        "all three, and on Windows only headless.</p>"
     )
     return ("install", "00", "Install", body)
 

@@ -11,7 +11,7 @@ uv tool install golded
 golded --help
 ```
 
-Python 3.12 or newer, on Linux or macOS. `pipx install golded` works too.
+Python 3.12 or newer, on Linux, macOS or Windows. `pipx install golded` works too.
 
 ## Run
 

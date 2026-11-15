@@ -1,13 +1,14 @@
 # Release preparation
 
-Version 1.0.0 targets Linux and macOS, Python 3.12–3.14.
-Windows is outside this release's test and compatibility promises.
+Version 1.0.0 targets Linux, macOS and Windows, Python 3.12–3.14. CI must pass on
+all three. Windows is tested headless only; nobody has run it in a Windows
+terminal, so say so if a Windows bug report comes in.
 
 ## Verification
 
 1. On the release commit, run every check in [CONTRIBUTING.md](../CONTRIBUTING.md)
    with `uv sync --locked --no-sources` on Python 3.12 and 3.14. CI runs the same
-   checks on Linux and macOS with 3.12, 3.13 and 3.14.
+   checks on Linux, macOS and Windows with 3.12, 3.13 and 3.14.
 2. Build wheel and sdist with `uv build --no-sources`. Rebuild the wheel from the
    sdist; `scripts/verify_distribution.py` does this and checks metadata, LICENSE,
    `py.typed`, the contents and two clean installs outside the checkout. Do not

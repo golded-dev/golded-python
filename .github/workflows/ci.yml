@@ -2,11 +2,15 @@ name: CI
 on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
+defaults:
+  run:
+    # Git Bash on Windows, so dist/* expands as it does on Linux and macOS.
+    shell: bash
 jobs:
   checks:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python: ['3.12', '3.13', '3.14']
     runs-on: ${{ matrix.os }}
     steps:
