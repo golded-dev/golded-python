@@ -52,17 +52,18 @@ gives 15 updates and a pagebar equal to a fresh repaint.
 
 ## Manual terminal checks
 
-Not run yet. Needs a person at each terminal, with a seeded database
-(`uv run python scripts/seed_demo.py`).
+Odinn tested iTerm2, macOS Terminal and Ubuntu 24.04 in Multipass on
+2026-11-21 with synthetic databases.
+He reported that the guided checks worked in all three terminals.
 
 | Check | macOS Terminal | iTerm2 | Linux terminal |
 | --- | --- | --- | --- |
-| `F2` saves | | | |
-| `Ctrl+S` saves | | | |
-| `Cmd+S` saves (may not reach the app) | | | |
-| `F9` toggles theme; both themes readable | | | |
-| `Shift+→` / `Shift+←` in the message view | | | |
-| `Shift+Space` pages up | | | |
-| Mouse wheel moves the pagebar in the lists and the message view | | | |
-| Resize while in each screen | | | |
-| 80×25 shows every screen without clipping | | | |
+| `F2` saves | Pass (reported) | Pass (reported) | Pass (reported) |
+| `Ctrl+S` saves | Pass (reported) | Pass (reported) | Pass (reported) |
+| `Cmd+S` saves (may not reach the app) | Pass (reported) | Pass (reported) | Not part of the Linux test |
+| `F9` toggles theme; both themes readable | Pass (reported) | Pass (reported) | Pass (reported) |
+| `Shift+→` / `Shift+←` in the message view | Pass (reported) | Pass (reported) | Pass (reported) |
+| `Shift+Space` pages up | Pass (reported) | Pass (reported) | Pass (reported) |
+| Mouse wheel moves the pagebar in the lists and the message view | Pass (reported) | Pass (reported) | Pass (reported) |
+| Resize while in each screen | Pass (reported) | Pass (reported) | Pass (reported) |
+| 80×25 shows every screen without clipping | Pass (reported) | Pass (reported) | Pass (reported) |
