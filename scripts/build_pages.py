@@ -21,7 +21,7 @@ LIBRARY_DOCS = "https://golded-dev.github.io/golded-ftn-python-docs/"
 FTNT_PYPI = "https://pypi.org/project/golded-ftn-tools/"
 
 # Flip at release (Phase 8), after golded is installable from PyPI.
-RELEASED = False
+RELEASED = True
 STATE = f"RELEASED {VERSION}" if RELEASED else f"{VERSION} · NOT RELEASED"
 
 PAGES = (

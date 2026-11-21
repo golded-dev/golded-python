@@ -19,7 +19,7 @@
 <div><span>GoldED/Py</span><a href="https://golded-dev.github.io/golded-ftn-python-docs/">Library docs ↗</a></div>
 </header>
 <div class="shell">
-<div class="bar"><span>GOLDED / MESSAGE READER</span><span>1.0.0 · NOT RELEASED · PYTHON 3.12+</span></div>
+<div class="bar"><span>GOLDED / MESSAGE READER</span><span>RELEASED 1.0.0 · PYTHON 3.12+</span></div>
 <div class="layout">
 <aside><div class="sidebar">
 <nav class="page-nav" aria-label="Manual"><a href="index.html">Home</a><a href="database.html">Message bases</a><a href="config.html" aria-current="page">Configuration</a><a href="keys.html">Keys</a><a href="screens.html">Screens</a></nav>
@@ -37,7 +37,7 @@ threaded_list = false
 splash_seconds = 10
 </code></pre></div></section><section class="guide-section" id="fields"><div class="section-title"><span>01</span><h2>Fields</h2></div><div class="table-wrap"><table><thead><tr><th>Field</th><th>Default</th><th>Meaning</th></tr></thead><tbody><tr><td><code>from_name</code></td><td>empty</td><td>Your name, filled in when you write or reply. Saving needs a From name.</td></tr><tr><td><code>from_address</code></td><td>none</td><td>Your FTN address, such as <code>2:236/777</code>. Used in From and the Origin line.</td></tr><tr><td><code>database</code></td><td><code>messages.sqlite3</code></td><td>The message base to open.</td></tr><tr><td><code>origin</code></td><td><code>Where we're going, we don't need roads.</code></td><td>Text of the <code> * Origin:</code> line below the tearline.</td></tr><tr><td><code>theme</code></td><td><code>dark</code></td><td><code>dark</code> or <code>light</code>.</td></tr><tr><td><code>threaded_list</code></td><td><code>false</code></td><td>Start the message list as a thread tree. A TOML boolean; <code>t</code> toggles it in the app.</td></tr><tr><td><code>splash_seconds</code></td><td><code>10</code></td><td>How long the splash screen counts down. A whole number; <code>0</code> skips the splash.</td></tr></tbody></table></div></section><section class="guide-section" id="options"><div class="section-title"><span>02</span><h2>Command-line options</h2></div><p>Options override the file.</p><div class="table-wrap"><table><thead><tr><th>Option</th><th>Default</th><th>Meaning</th></tr></thead><tbody><tr><td><code>--config PATH</code></td><td><code>golded.toml</code></td><td>User config file</td></tr><tr><td><code>--database PATH</code></td><td>from config, else <code>messages.sqlite3</code></td><td>SQLite message base</td></tr><tr><td><code>--theme NAME</code></td><td>from config, else <code>dark</code></td><td><code>dark</code> or <code>light</code></td></tr></tbody></table></div></section><section class="guide-section" id="errors"><div class="section-title"><span>03</span><h2>Invalid values</h2></div><p>A config <code>golded</code> cannot use stops it at startup with <code>Cannot read config PATH: …</code> and exit status 1: malformed TOML, an invalid <code>from_address</code>, an unknown <code>theme</code>, a <code>threaded_list</code> that is not <code>true</code> or <code>false</code> (<code>"no"</code> is a string, and an error), or a <code>splash_seconds</code> that is not a whole number of 0 or more.</p></section></main>
 </div></div>
-<footer><span>GoldED/Py / GoldED.dev</span><span>1.0.0 · NOT RELEASED · MIT LICENSE</span></footer>
+<footer><span>GoldED/Py / GoldED.dev</span><span>RELEASED 1.0.0 · MIT LICENSE</span></footer>
 </div>
 
 <script>
