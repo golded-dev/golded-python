@@ -10,6 +10,9 @@ from golded.data.area import Area
 
 
 class MessageStore(ABC):
+    def read_status(self, area: str) -> str:
+        return ""
+
     @abstractmethod
     def areas(self) -> tuple[Area, ...]:
         pass

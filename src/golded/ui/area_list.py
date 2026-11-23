@@ -252,6 +252,11 @@ class AreaListScreen(ListScreen):
 
         row = event.data_table.get_row_at(event.cursor_row)
         text = f"{row[3]}: {row[2]} msgs"
+        code = event.row_key.value
+        if code is not None:
+            read_status = self.__session.area_read_status(code)
+            if read_status:
+                text = read_status
         self.query_one(StatusBar).set_middle(text)
         self.sync_pagebar()
 

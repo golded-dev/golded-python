@@ -305,12 +305,13 @@ def database_page() -> str:
             "what",
             "00",
             "What golded opens",
-            "<p>A message base is one SQLite file in the "
+            "<p>A SQLite message base is one file in the "
             "<code>golded-ftn-sqlite</code> format. It holds one or more areas; "
             "each area is echomail or netmail and has a code (<code>GENERAL</code>) "
             "and a display name. <code>golded</code> lists the areas, reads their "
             "messages and appends the messages you write. It does not delete, edit "
             "or toss messages.</p>"
+            '<p>For JAM bases, see <a href="config.html#areadef">AREADEF configuration</a>.</p>'
             "<p>Close the base in other programs while <code>golded</code> writes "
             "to it. A read-only file can still be read; saving then fails with a "
             "message in the status bar, and the draft stays open.</p>",
@@ -498,7 +499,7 @@ def config_page() -> str:
             "03",
             "Classic area configuration",
             "<p>Run <code>golded --area-config golded.cfg</code> to list areas from "
-            "one or more existing SQLite bases in configuration order. "
+            "existing SQLite and JAM bases in configuration order. "
             "This option replaces the TOML <code>database</code> setting and "
             "cannot be combined with <code>--database</code>. "
             "Keep identity, origin and display preferences in <code>golded.toml</code>.</p>"
@@ -506,16 +507,37 @@ def config_page() -> str:
                 "areadef-example",
                 "golded.cfg",
                 'AREADEF GENERAL "General discussion" A Echo SQLite "bases/echo.sqlite3" . ()\n'
-                'AREADEF NETMAIL "Private mail" #117 Net SQLite bases/mail.sqlite3 . ()\n',
+                'AREADEF NETMAIL "Private mail" #117 Net SQLite bases/mail.sqlite3 . ()\n'
+                'AREADEF UNIX "UNIX discussion" A Echo JAM bases/UNIX . ()\n',
             )
             + "<p>Each AREADEF line gives the echo ID, quoted description, group, "
             "type, format and path. The group is a letter A–Z, 0, or #1–#999. "
-            "<code>Echo</code> and <code>Net</code> must match the existing area's "
-            "type. Echo IDs are matched without regard to ASCII case and must be unique in "
-            "the configuration. Paths are relative to the configuration file "
+            "Use <code>Echo</code> or <code>Net</code>. For SQLite, the type and echo ID "
+            "must match an existing area. Echo IDs are matched without regard to ASCII case "
+            "and must be unique in the configuration. Paths are relative to the configuration file "
             "unless absolute. Save the file as UTF-8.</p>"
-            "<p><code>SQLite</code> is a GoldED.py extension and is the supported "
-            "format. The optional classic tail <code>aka (attrs) [origin]</code> "
+            "<p><code>SQLite</code> is a GoldED.py extension. "
+            "For <code>JAM</code>, use the base filename without the extension. "
+            "Each JAM base represents one area and needs its existing "
+            "<code>.JHR</code>, <code>.JDT</code> and <code>.JDX</code> files. "
+            "Suffixes may be lowercase. GoldED checks the base on startup and reports "
+            "invalid records. It uses the declared charset when reading, falls back to "
+            "CP850, and writes in CP850. Characters outside CP850 stop the save and "
+            "leave the draft open. Keep the base closed in other programs while using "
+            "it here. A read-only base supports browsing.</p>"
+            "<p><code>JAMREAD strict</code> sets the global JAM read mode. "
+            "Strict is also the built-in default. Use <code>JAMREAD lenient</code> "
+            "to change the default for all JAM areas, or "
+            "<code>JAMREAD UNIX lenient</code> to override it for the UNIX area. "
+            "An area override takes precedence regardless of directive order. "
+            "Echo IDs in overrides use the same matching rules as AREADEF.</p>"
+            "<p>Lenient mode keeps recoverable records and can skip invalid records "
+            "or stop at an ambiguous index entry. Highlight the area to see counts "
+            "of recovered deviations, skipped records and stopped traversals in the "
+            "status bar. A stopped traversal may show only part of the base. "
+            "JAM writing still validates the entire base strictly. If that check "
+            "fails, the composer shows the error and keeps the draft open.</p>"
+            "<p>The optional classic tail <code>aka (attrs) [origin]</code> "
             "and group are accepted without applying area-specific settings. "
             "Semicolons outside quoted fields start comments. Other directives, "
             "including <code>INCLUDE</code> and <code>AREAFILE</code>, are ignored. "

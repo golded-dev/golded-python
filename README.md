@@ -1,6 +1,6 @@
 # golded
 
-A terminal message reader for FidoNet echomail and netmail stored in SQLite, modelled on GoldED. Built with Textual. Storage comes from [`golded-ftn`](https://pypi.org/project/golded-ftn/) and [`golded-ftn-sqlite`](https://pypi.org/project/golded-ftn-sqlite/).
+A terminal message reader for FidoNet echomail and netmail stored in SQLite or JAM, modelled on GoldED. Built with Textual. Storage uses [`golded-ftn-sqlite`](https://pypi.org/project/golded-ftn-sqlite/) and [`golded-ftn-jam`](https://pypi.org/project/golded-ftn-jam/).
 
 The manual covers message bases, configuration, every key and each screen: <https://golded-dev.github.io/golded-python/>. Its source is in `site/`, built by `scripts/build_pages.py`.
 
@@ -39,14 +39,15 @@ splash_seconds = 10
 
 `--config`, `--database` and `--theme` override the file. A value golded cannot use stops it at startup with one line and exit status 1. The manual describes each field.
 
-For areas spread across SQLite bases, use `golded --area-config golded.cfg`:
+For JAM bases or areas spread across several bases, use `golded --area-config golded.cfg`:
 
 ```text
 AREADEF GENERAL "General discussion" A Echo SQLite "bases/echo.sqlite3" . ()
 AREADEF NETMAIL "Private mail" 0 Net SQLite bases/mail.sqlite3 . ()
+AREADEF UNIX "UNIX discussion" A Echo JAM bases/UNIX . ()
 ```
 
-Each echo ID and type must match an area in the named database. Relative paths start at the configuration file. The configuration page in the manual describes the supported subset of classic `AREADEF` syntax.
+For SQLite, the echo ID and type must match an area in the named database. For JAM, specify the base filename without its extension. Relative paths start at the configuration file. The configuration page in the manual describes the supported subset of classic `AREADEF` syntax.
 
 ## Development
 

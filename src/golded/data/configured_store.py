@@ -4,10 +4,11 @@ import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
 
-from golded_ftn import OutgoingMessage, ParsedMessage
+from golded_ftn import OutgoingMessage, ParsedMessage, ParserException
 
 from golded.data.area import Area
 from golded.data.area_config import area_code_key, load_area_config
+from golded.data.jam_store import JamMessageStore
 from golded.data.store import MessageStore, open_message_store
 
 _AREA_KINDS = {"echo": "echomail", "net": "netmail"}
@@ -26,6 +27,10 @@ class ConfiguredMessageStore(MessageStore):
 
     def areas(self) -> tuple[Area, ...]:
         return tuple(route.area for route in self._routes.values())
+
+    def read_status(self, area: str) -> str:
+        route = self._routes[area]
+        return route.store.read_status(route.code)
 
     def messages(self, area: str) -> tuple[ParsedMessage, ...]:
         route = self._routes[area]
@@ -49,7 +54,8 @@ def open_configured_store(path: Path) -> ConfiguredMessageStore:
     stores: dict[Path, tuple[MessageStore, dict[str, Area]]] = {}
     for entry in load_area_config(path):
         source = f"{path}:{entry.line}"
-        if entry.format.casefold() != "sqlite":
+        format_name = entry.format.casefold()
+        if format_name not in {"sqlite", "jam"}:
             raise ValueError(
                 f"{source}: unsupported message-base format {entry.format}"
             )
@@ -58,6 +64,17 @@ def open_configured_store(path: Path) -> ConfiguredMessageStore:
             raise ValueError(f"{source}: unsupported area type {entry.kind}")
 
         database = (path.parent / entry.location).resolve()
+        area = Area(entry.code, entry.description, kind)
+        if format_name == "jam":
+            try:
+                jam = JamMessageStore(database, area, lenient=entry.lenient)
+            except (OSError, ParserException, ValueError) as error:
+                raise ValueError(
+                    f"{source}: cannot open JAM base {database}: {error}"
+                ) from error
+            routes[entry.code] = AreaRoute(area, jam, entry.code)
+            continue
+
         if database not in stores:
             try:
                 store = open_message_store(database)
@@ -79,7 +96,5 @@ def open_configured_store(path: Path) -> ConfiguredMessageStore:
                 f"{source}: area {entry.code} is {stored.kind} in {database}, "
                 f"but configured as {entry.kind}"
             )
-        routes[entry.code] = AreaRoute(
-            Area(entry.code, entry.description, kind), store, stored.code
-        )
+        routes[entry.code] = AreaRoute(area, store, stored.code)
     return ConfiguredMessageStore(routes)
