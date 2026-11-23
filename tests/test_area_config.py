@@ -69,8 +69,8 @@ def test_session_routes_configured_areas_to_separate_databases(tmp_path: Path) -
         ('AREADEF ONE "Bad group" #1000 Echo SQLite base.db', "invalid group"),
         ('AREADEF ONE "Bad type" A Else SQLite base.db', "unsupported area type"),
         (
-            'AREADEF ONE "Classic" A Echo Hudson 21 . ()',
-            "unsupported message-base format Hudson",
+            'AREADEF ONE "Classic" A Echo Squish base . ()',
+            "unsupported message-base format Squish",
         ),
     ],
 )

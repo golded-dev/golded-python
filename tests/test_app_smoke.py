@@ -2,13 +2,19 @@
 
 import tempfile
 import unittest
+from pathlib import Path
 
 from golded_ftn import FtnAddress, OutgoingMessage
+from golded_ftn_jam import JamReader, JamWriter, JamWriterOptions
 from textual.pilot import Pilot
 from textual.widgets import Input, Static, TextArea
 
 from golded.data.area import Area
-from golded.data.store import create_message_store, open_message_store
+from golded.data.store import (
+    create_message_store,
+    open_configured_store,
+    open_message_store,
+)
 from golded.logic.session import Session
 from golded.logic.user_config import UserConfig
 from golded.ui.app import GoldED
@@ -201,3 +207,63 @@ class AppSmokeTests(unittest.IsolatedAsyncioTestCase):
             await pilot.press("escape")
             await pilot.pause()
             self.assertEqual(self.app.return_code, 0)
+
+
+class JamAppTests(unittest.IsolatedAsyncioTestCase):
+    async def test_read_write_and_reply_in_jam_area(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp) / "echo"
+            writer = JamWriter()
+            writer.create(base, JamWriterOptions(extension_case="lower"))
+            with writer.open(base) as jam:
+                first = jam.append(
+                    OutgoingMessage(
+                        from_name="Alice",
+                        to_name="All",
+                        subject="Initial",
+                        body_text="Hello from JAM",
+                    )
+                ).identity.msgno
+            create_message_store(base.parent / "areas.sqlite3", [Area("SQL", "SQLite")])
+            config = base.parent / "golded.cfg"
+            config.write_text(
+                'AREADEF JAM.ECHO "JAM echo" A Echo JAM echo . ()\n'
+                'AREADEF SQL "SQLite" A Echo SQLite areas.sqlite3 . ()\n'
+            )
+            store = open_configured_store(config)
+            self.assertEqual([area.code for area in store.areas()], ["JAM.ECHO", "SQL"])
+            user = UserConfig(from_name="Tester", splash_seconds=0)
+            session = Session(store, user)
+            app = GoldED(session, "dark")
+
+            async with app.run_test(size=SIZE) as pilot:
+                await pilot.press("enter", "enter")
+                await pilot.pause()
+                self.assertIsInstance(app.screen, MessageViewScreen)
+                message = session.current_message()
+                assert message is not None
+                self.assertEqual(message.body_text, "Hello from JAM")
+                await pilot.press("r")
+                await pilot.pause()
+                self.assertIsInstance(app.screen, WriteMessageScreen)
+                await pilot.press("f2")
+                await pilot.pause()
+                self.assertIsInstance(app.screen, MessageListScreen)
+                await pilot.press("w")
+                await pilot.pause()
+                self.assertIsInstance(app.screen, WriteMessageScreen)
+                app.screen.query_one("#subject", Input).value = "New JAM message"
+                app.screen.query_one(TextArea).text = "Written in GoldED.py"
+                await pilot.press("f2")
+                await pilot.pause()
+                self.assertIsInstance(app.screen, MessageListScreen)
+
+            self.assertEqual(store.messages("SQL"), ())
+            messages = list(JamReader().read(base))
+            self.assertEqual(
+                [m.subject for m in messages],
+                ["Initial", "Re: Initial", "New JAM message"],
+            )
+            self.assertEqual(messages[1].reply_to_msgno, first)
+            self.assertEqual(messages[2].attributes_raw, 0x01000001)
+            self.assertIsNotNone(messages[2].posted_at)

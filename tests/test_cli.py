@@ -72,9 +72,9 @@ class CliErrorTests(unittest.TestCase):
 
     def test_bad_areadef(self) -> None:
         config = self.dir / "golded.cfg"
-        config.write_text('AREADEF MAIL "Mail" A Echo JAM messages . ()\n')
+        config.write_text('AREADEF MAIL "Mail" A Echo Hudson 10 . ()\n')
         output = self.fail_with("--area-config", str(config))
-        self.assertIn(f"{config}:1: unsupported message-base format JAM", output)
+        self.assertIn(f"{config}:1: unsupported message-base format Hudson", output)
 
     def test_area_config_opens_configured_areas_with_toml_preferences(self) -> None:
         from golded.data.area import Area
@@ -111,3 +111,10 @@ class CliErrorTests(unittest.TestCase):
         self.assertEqual(store.messages("mail"), ())
         self.assertEqual(theme, "light")
         self.assertEqual(user_config.from_name, "Alice")
+
+    def test_missing_jam_files(self) -> None:
+        config = self.dir / "golded.cfg"
+        config.write_text('AREADEF MAIL "Mail" 0 Net JAM missing . ()\n')
+        output = self.fail_with("--area-config", str(config))
+        self.assertIn(f"{config}:1: cannot open JAM base", output)
+        self.assertIn("Missing JAM file", output)

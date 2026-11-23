@@ -34,6 +34,9 @@ class Session:
     def areas(self) -> tuple[Area, ...]:
         return self.__store.areas()
 
+    def area_read_status(self, area: str) -> str:
+        return self.__store.read_status(area)
+
     def selected_area(self) -> str | None:
         return self.__selected_area
 
