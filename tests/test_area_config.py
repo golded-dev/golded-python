@@ -186,3 +186,71 @@ def test_opus_readonly_via_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     monkeypatch.setattr(cli, "run", verify)
     cli.main()
     assert (base / "1.MSG").read_bytes() == original
+
+
+@pytest.mark.parametrize("toml", [False, True])
+def test_hudson_routes_distinct_boards(tmp_path: Path, toml: bool) -> None:
+    from golded_ftn_hudson import HudsonReader, HudsonWriter
+
+    base = tmp_path / "hudson"
+    base.mkdir()
+    writer = HudsonWriter()
+    writer.create(base)
+    for board in (7, 8):
+        with writer.open(base, board=board) as opened:
+            opened.append(
+                OutgoingMessage(
+                    from_name="Alice",
+                    to_name="All",
+                    subject=f"Board {board}",
+                    body_text="Original",
+                )
+            )
+
+    if toml:
+        config = tmp_path / "golded.toml"
+        config.write_text(
+            "[areas]\n"
+            'SEVEN = { description = "Seven", group = "A", type = "echo", '
+            'format = "hudson", path = "hudson", board = 7 }\n'
+            'EIGHT = { description = "Eight", group = "A", type = "echo", '
+            'format = "hudson", path = "hudson", board = 8 }\n'
+        )
+        entries = load_user_config(config).areas
+    else:
+        config = tmp_path / "golded.cfg"
+        config.write_text(
+            'AREADEF SEVEN "Seven" A Echo Hudson 7\n'
+            'AREADEF EIGHT "Eight" A Echo Hudson 8\n'
+            'HUDSONPATH "hudson"\n'
+        )
+        entries = None
+    store = open_configured_store(config, entries=entries)
+    assert [area.code for area in store.areas()] == ["SEVEN", "EIGHT"]
+    assert [message.subject for message in store.messages("SEVEN")] == ["Board 7"]
+    assert [message.subject for message in store.messages("EIGHT")] == ["Board 8"]
+
+    session = Session(store, UserConfig(from_name="Carol"))
+    session.select_area("EIGHT")
+    session.select_message(2)
+    session.start_reply_draft("Original")
+    reply = session.save_draft_message()
+    session.start_draft_message()
+    session.set_draft_message(
+        OutgoingMessage(
+            from_name="Carol", to_name="All", subject="New", body_text="Blåbær"
+        )
+    )
+    new = session.save_draft_message()
+    assert reply is not None and new is not None
+    stored = {message.msgno: message for message in HudsonReader().read(base)}
+    assert stored[reply].area == stored[new].area == "BOARD8"
+    assert stored[reply].reply_to_msgno == 2
+    assert "Blåbær" in stored[new].body_text
+    assert [message.subject for message in store.messages("SEVEN")] == ["Board 7"]
+
+    readonly = open_configured_store(config, entries=entries, readonly=True)
+    assert readonly.area_readonly("EIGHT")
+    assert readonly.message("EIGHT", reply).subject == "Re: Board 8"
+    with pytest.raises(PermissionError):
+        readonly.delete("EIGHT", reply)

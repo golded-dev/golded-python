@@ -86,7 +86,7 @@ def open_configured_store(
 ) -> MessageStore:
     from golded.data.configured_store import open_configured_store as open_store
 
-    store = open_store(Path(path), entries=entries)
+    store = open_store(Path(path), entries=entries, readonly=readonly)
     return ReadOnlyMessageStore(store) if readonly else store
 
 

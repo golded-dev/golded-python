@@ -519,7 +519,7 @@ def config_page() -> str:
             "<code>type</code>, <code>format</code> and <code>path</code>. "
             "Use a group of A–Z, 0 or #1–#999 as a quoted string. Use "
             "<code>echo</code> or <code>net</code> for the type, and "
-            "<code>jam</code>, <code>msg</code>, <code>opus</code> or <code>sqlite</code> for the format. "
+            "<code>jam</code>, <code>msg</code>, <code>opus</code>, <code>hudson</code> or <code>sqlite</code> for the format. "
             "Paths are relative to the TOML file unless absolute. "
             "The <a href='#areadef'>classic area rules</a> also apply to SQLite area "
             "matching, JAM base filenames and JAM writes.</p>"
@@ -539,7 +539,7 @@ def config_page() -> str:
             "04",
             "Classic area configuration",
             "<p>Run <code>golded --area-config golded.cfg</code> to list areas from "
-            "existing SQLite, JAM and MSG bases in configuration order. "
+            "existing SQLite, JAM, MSG, Opus and Hudson bases in configuration order. "
             "This option replaces the TOML <code>database</code> setting and "
             "cannot be combined with <code>--database</code>. "
             "Keep identity, origin and display preferences in <code>golded.toml</code>.</p>"
@@ -588,6 +588,16 @@ def config_page() -> str:
             '<code>format = "opus"</code> in TOML. Opus timestamps use '
             "two-second precision. It is safe to browse in <code>--readonly</code> mode. "
             "Close the area in other programs before writing to it here.</p>"
+            "<p>Hudson stores multiple boards in a single base directory. "
+            "In classic configuration, set <code>HUDSONPATH bases/hudson</code> once "
+            "and give the board number in each AREADEF, for example "
+            '<code>AREADEF TEST "Test" A Echo Hudson 7</code>. '
+            'In TOML, set <code>format = "hudson"</code>, '
+            '<code>path = "bases/hudson"</code> and <code>board = 7</code>. '
+            "Board numbers run from 1 to 200. New messages and replies go to "
+            "the configured board. With <code>--readonly</code>, GoldED loads the Hudson "
+            "base at startup. Restart GoldED to see later changes. "
+            "Close the base in other programs before writing.</p>"
             "<p>The optional classic tail <code>aka (attrs) [origin]</code> "
             "and group are accepted without applying area-specific settings. "
             "Semicolons outside quoted fields start comments. Other directives, "

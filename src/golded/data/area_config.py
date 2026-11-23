@@ -13,6 +13,9 @@ _AREADEF = re.compile(
     r"\s*(?:;.*)?",
     re.IGNORECASE,
 )
+_HUDSONPATH = re.compile(
+    r'HUDSONPATH\s+(?:"([^"]+)"|([^\s";]+))\s*(?:;.*)?', re.IGNORECASE
+)
 _JAMREAD = re.compile(
     r"JAMREAD\s+(?:([^\s;]+)\s+)?(strict|lenient)\s*(?:;.*)?", re.IGNORECASE
 )
@@ -35,16 +38,24 @@ class ConfiguredArea:
     location: str
     line: int | None = None
     lenient: bool = False
+    board: int | None = None
 
 
 def load_area_config(path: Path) -> tuple[ConfiguredArea, ...]:
     areas: list[ConfiguredArea] = []
     codes: set[str] = set()
     read_modes: dict[str, tuple[bool, int]] = {}
+    hudson_path: str | None = None
     for number, raw_line in enumerate(
         path.read_text(encoding="utf-8-sig").splitlines(), start=1
     ):
         line = raw_line.strip()
+        if re.match(r"HUDSONPATH(?=\s|;|$)", line, re.IGNORECASE):
+            path_match = _HUDSONPATH.fullmatch(line)
+            if path_match is None or hudson_path is not None:
+                raise ValueError(f"{path}:{number}: expected a single HUDSONPATH")
+            hudson_path = path_match[1] or path_match[2]
+            continue
         if re.match(r"JAMREAD(?=\s|;|$)", line, re.IGNORECASE):
             directive = _JAMREAD.fullmatch(line)
             if directive is None:
@@ -76,6 +87,18 @@ def load_area_config(path: Path) -> tuple[ConfiguredArea, ...]:
                 location=match["quoted_location"] or match["location"],
                 line=number,
             )
+        )
+    for index, area in enumerate(areas):
+        if area.format.casefold() != "hudson":
+            continue
+        source = f"{path}:{area.line}"
+        if hudson_path is None:
+            raise ValueError(f"{source}: Hudson areas require HUDSONPATH")
+        board = (
+            int(area.location) if re.fullmatch(r"[0-9]{1,3}", area.location) else None
+        )
+        areas[index] = replace(
+            area, location=hudson_path, board=_hudson_board(board, source)
         )
     if not areas:
         raise ValueError(f"{path}: no AREADEF entries")
@@ -130,12 +153,31 @@ def parse_toml_areas(areas: object, jam: object) -> tuple[ConfiguredArea, ...]:
             if not is_jam:
                 raise ValueError(f"{source}.read_mode is only valid for JAM areas")
             lenient = _toml_read_mode(fields["read_mode"], f"{source}.read_mode")
+        if format_name.casefold() == "hudson":
+            board = _hudson_board(fields.get("board"), source)
+        elif "board" in fields:
+            raise ValueError(f"{source}.board is only valid for Hudson areas")
+        else:
+            board = None
         entries.append(
             ConfiguredArea(
-                code, description, group, kind, format_name, location, lenient=lenient
+                code,
+                description,
+                group,
+                kind,
+                format_name,
+                location,
+                lenient=lenient,
+                board=board,
             )
         )
     return tuple(entries)
+
+
+def _hudson_board(value: object, source: str) -> int:
+    if type(value) is not int or not 1 <= value <= 200:
+        raise ValueError(f"{source}: Hudson board must be an integer from 1 to 200")
+    return value
 
 
 def _toml_area_field(fields: dict[str, object], field: str, source: str) -> str:

@@ -8,6 +8,7 @@ from golded_ftn import OutgoingMessage, ParsedMessage, ParserException
 
 from golded.data.area import Area
 from golded.data.area_config import ConfiguredArea, area_code_key, load_area_config
+from golded.data.hudson_store import HudsonBase, HudsonMessageStore
 from golded.data.jam_store import JamMessageStore
 from golded.data.msg_store import MsgMessageStore
 from golded.data.store import MessageStore, open_message_store
@@ -51,9 +52,13 @@ class ConfiguredMessageStore(MessageStore):
 
 
 def open_configured_store(
-    path: Path, *, entries: tuple[ConfiguredArea, ...] | None = None
+    path: Path,
+    *,
+    entries: tuple[ConfiguredArea, ...] | None = None,
+    readonly: bool = False,
 ) -> ConfiguredMessageStore:
     routes: dict[str, AreaRoute] = {}
+    hudson_bases: dict[Path, HudsonBase] = {}
     stores: dict[Path, tuple[MessageStore, dict[str, Area]]] = {}
     for entry in load_area_config(path) if entries is None else entries:
         source = (
@@ -62,7 +67,7 @@ def open_configured_store(
             else f"{path}: areas[{entry.code!r}]"
         )
         format_name = entry.format.casefold()
-        if format_name not in {"sqlite", "jam", "msg", "opus"}:
+        if format_name not in {"sqlite", "jam", "msg", "opus", "hudson"}:
             raise ValueError(
                 f"{source}: unsupported message-base format {entry.format}"
             )
@@ -90,6 +95,20 @@ def open_configured_store(
                     f"{source}: cannot open {entry.format} area {database}: {error}"
                 ) from error
             routes[entry.code] = AreaRoute(area, msg, entry.code)
+            continue
+
+        if format_name == "hudson":
+            if entry.board is None:
+                raise ValueError(f"{source}: Hudson board is required")
+            try:
+                if database not in hudson_bases:
+                    hudson_bases[database] = HudsonBase(database, readonly=readonly)
+            except (OSError, ParserException, ValueError) as error:
+                raise ValueError(
+                    f"{source}: cannot open Hudson base {database}: {error}"
+                ) from error
+            hudson = HudsonMessageStore(hudson_bases[database], area, board=entry.board)
+            routes[entry.code] = AreaRoute(area, hudson, entry.code)
             continue
 
         if database not in stores:

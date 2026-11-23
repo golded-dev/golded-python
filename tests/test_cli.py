@@ -72,9 +72,9 @@ class CliErrorTests(unittest.TestCase):
 
     def test_bad_areadef(self) -> None:
         config = self.dir / "golded.cfg"
-        config.write_text('AREADEF MAIL "Mail" A Echo Hudson 10 . ()\n')
+        config.write_text('AREADEF MAIL "Mail" A Echo Gold 10 . ()\n')
         output = self.fail_with("--area-config", str(config))
-        self.assertIn(f"{config}:1: unsupported message-base format Hudson", output)
+        self.assertIn(f"{config}:1: unsupported message-base format Gold", output)
 
     def test_area_config_opens_configured_areas_with_toml_preferences(self) -> None:
         from golded.data.area import Area
