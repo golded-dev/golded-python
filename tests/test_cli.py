@@ -88,7 +88,9 @@ class CliErrorTests(unittest.TestCase):
             'AREADEF mail "Private mail" 0 Net SQLite mail.sqlite3 . ()\n'
         )
         preferences = self.dir / "golded.toml"
-        preferences.write_text('database = "absent.sqlite3"\nfrom_name = "Alice"\n')
+        preferences.write_text(
+            'database = "absent.sqlite3"\nfrom_name = "Alice"\nareas = "ignored"\n'
+        )
         argv = [
             "golded",
             "--config",
@@ -118,3 +120,82 @@ class CliErrorTests(unittest.TestCase):
         output = self.fail_with("--area-config", str(config))
         self.assertIn(f"{config}:1: cannot open JAM base", output)
         self.assertIn("Missing JAM file", output)
+
+    def test_toml_areas_route_in_declaration_order(self) -> None:
+        from golded.data.area import Area
+        from golded.data.store import create_message_store
+
+        create_message_store(
+            self.dir / "mail.sqlite3",
+            [
+                Area("LOCAL", "Local", "netmail"),
+                Area("FIDONET.GENERAL", "General", "echomail"),
+            ],
+        )
+        config = self.dir / "golded.toml"
+        config.write_text(
+            'database = "absent.sqlite3"\n'
+            "[areas]\n"
+            '"FIDONET.GENERAL" = { description = "General discussion", group = "A", '
+            'type = "echo", format = "sqlite", path = "mail.sqlite3" }\n'
+            'LOCAL = { description = "Local mail", group = "0", '
+            'type = "net", format = "sqlite", path = "mail.sqlite3" }\n'
+        )
+        with (
+            mock.patch("sys.argv", ["golded", "--config", str(config)]),
+            mock.patch.object(cli, "run") as run,
+        ):
+            cli.main()
+
+        store, _, _ = run.call_args.args
+        self.assertEqual(
+            [(area.code, area.name, area.kind) for area in store.areas()],
+            [
+                ("FIDONET.GENERAL", "General discussion", "echomail"),
+                ("LOCAL", "Local mail", "netmail"),
+            ],
+        )
+        self.assertEqual(store.messages("FIDONET.GENERAL"), ())
+
+    def test_explicit_database_uses_preferences_and_skips_toml_areas(self) -> None:
+        from golded.data.area import Area
+        from golded.data.store import create_message_store
+
+        database = self.dir / "mail.sqlite3"
+        create_message_store(database, [Area("MAIL", "Mail", "netmail")])
+        config = self.dir / "golded.toml"
+        config.write_text(
+            'from_name = "Alice"\nareas = "ignored"\n[jam]\nread_mode = false\n'
+        )
+        with (
+            mock.patch(
+                "sys.argv",
+                ["golded", "--config", str(config), "--database", str(database)],
+            ),
+            mock.patch.object(cli, "run") as run,
+        ):
+            cli.main()
+
+        store, _, user_config = run.call_args.args
+        self.assertEqual([area.code for area in store.areas()], ["MAIL"])
+        self.assertEqual(user_config.from_name, "Alice")
+
+    def test_invalid_toml_read_modes(self) -> None:
+        config = self.dir / "golded.toml"
+        entry = (
+            'MAIL = { description = "Mail", group = "A", type = "net", path = "mail"'
+        )
+        for content, error in (
+            ('[jam]\nread_mode = "loose"\n', "jam.read_mode must be strict or lenient"),
+            (
+                "[areas]\n" + entry + ', format = "jam", read_mode = false }\n',
+                "areas['MAIL'].read_mode must be strict or lenient",
+            ),
+            (
+                "[areas]\n" + entry + ', format = "sqlite", read_mode = "strict" }\n',
+                "areas['MAIL'].read_mode is only valid for JAM areas",
+            ),
+        ):
+            with self.subTest(content=content):
+                config.write_text(content)
+                self.assertIn(error, self.fail_with("--config", str(config)))

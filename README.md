@@ -39,7 +39,21 @@ splash_seconds = 10
 
 `--config`, `--database` and `--theme` override the file. A value golded cannot use stops it at startup with one line and exit status 1. The manual describes each field.
 
-For JAM bases or areas spread across several bases, use `golded --area-config golded.cfg`:
+For JAM bases or areas spread across several bases, add an `[areas]` table to
+`golded.toml`. Quote area IDs containing dots. Each JAM area can override the
+global `[jam].read_mode`, which defaults to `strict`.
+
+```toml
+[jam]
+read_mode = "strict"
+
+[areas]
+"FIDONET.GENERAL" = { description = "General discussion", group = "A", type = "echo", format = "jam", path = "bases/general", read_mode = "lenient" }
+```
+
+An explicit `--database` or `--area-config` overrides the TOML message source.
+A nonempty `[areas]` table takes precedence over the TOML `database` setting.
+For classic definitions, run `golded --area-config golded.cfg`:
 
 ```text
 AREADEF GENERAL "General discussion" A Echo SQLite "bases/echo.sqlite3" . ()

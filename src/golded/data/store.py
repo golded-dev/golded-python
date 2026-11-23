@@ -7,6 +7,7 @@ from pathlib import Path
 from golded_ftn import FtnAddress, OutgoingMessage, ParsedMessage
 
 from golded.data.area import Area
+from golded.data.area_config import ConfiguredArea
 
 
 class MessageStore(ABC):
@@ -40,10 +41,12 @@ def open_message_store(path: str | Path) -> MessageStore:
     return open_store(path)
 
 
-def open_configured_store(path: str | Path) -> MessageStore:
+def open_configured_store(
+    path: str | Path, *, entries: tuple[ConfiguredArea, ...] | None = None
+) -> MessageStore:
     from golded.data.configured_store import open_configured_store as open_store
 
-    return open_store(Path(path))
+    return open_store(Path(path), entries=entries)
 
 
 def create_message_store(

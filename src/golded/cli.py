@@ -27,7 +27,7 @@ def main() -> None:
     )
     sources.add_argument(
         "--area-config",
-        help="path to golded.cfg with AREADEF entries (overrides config database)",
+        help="path to golded.cfg with AREADEF entries (overrides TOML message source)",
     )
     parser.add_argument(
         "--theme",
@@ -38,19 +38,21 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        user_config = load_user_config(args.config)
+        user_config = load_user_config(
+            args.config, load_areas=args.area_config is None and args.database is None
+        )
     except (OSError, ValueError) as error:
         print(f"Cannot read config {args.config}: {error}", file=sys.stderr)
         raise SystemExit(1) from None
 
     theme = user_config.theme if args.theme is None else args.theme
-    if args.area_config is not None:
+    if args.area_config is not None or user_config.areas:
+        area_config = args.area_config if args.area_config is not None else args.config
+        entries = None if args.area_config is not None else user_config.areas
         try:
-            store = open_configured_store(args.area_config)
+            store = open_configured_store(area_config, entries=entries)
         except (OSError, ValueError) as error:
-            print(
-                f"Cannot load area config {args.area_config}: {error}", file=sys.stderr
-            )
+            print(f"Cannot load area config {area_config}: {error}", file=sys.stderr)
             raise SystemExit(1) from None
         run(store, theme, user_config)
         return

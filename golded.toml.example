@@ -8,3 +8,10 @@ origin = "Where we're going, we don't need roads."
 theme = "dark"
 threaded_list = false
 splash_seconds = 10
+
+# Optional message areas. Paths are relative to this file.
+# [jam]
+# read_mode = "strict"
+#
+# [areas]
+# "FIDONET.GENERAL" = { description = "General discussion", group = "A", type = "echo", format = "jam", path = "bases/general", read_mode = "lenient" }

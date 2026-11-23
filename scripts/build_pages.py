@@ -478,8 +478,8 @@ def config_page() -> str:
                     ),
                     (
                         "<code>--database PATH</code>",
-                        "from config, else <code>messages.sqlite3</code>",
-                        "SQLite message base",
+                        "from config",
+                        "Open one SQLite message base, overriding the TOML message source.",
                     ),
                     (
                         "<code>--area-config PATH</code>",
@@ -495,8 +495,43 @@ def config_page() -> str:
             ),
         ),
         (
-            "areadef",
+            "toml-areas",
             "03",
+            "Message areas in golded.toml",
+            "<p>Put each area in an inline table under <code>[areas]</code>. "
+            "The key is the area ID. Quote IDs containing dots so TOML treats "
+            "the full ID as one key. Areas appear in declaration order.</p>"
+            + code_pane(
+                "toml-areas-example",
+                "golded.toml",
+                '[jam]\nread_mode = "strict"\n\n'
+                "[areas]\n"
+                'ARCHIVE = { description = "Archive", group = "A", type = "echo", format = "jam", path = "bases/archive", read_mode = "lenient" }\n'
+                '"FIDONET.GENERAL" = { description = "General discussion", group = "A", type = "echo", format = "jam", path = "bases/general" }\n'
+                'LOCAL = { description = "Local discussion", group = "A", type = "echo", format = "sqlite", path = "bases/local.sqlite3" }\n',
+            )
+            + "<p>Each entry requires <code>description</code>, <code>group</code>, "
+            "<code>type</code>, <code>format</code> and <code>path</code>. "
+            "Use a group of A–Z, 0 or #1–#999 as a quoted string. Use "
+            "<code>echo</code> or <code>net</code> for the type, and "
+            "<code>jam</code> or <code>sqlite</code> for the format. "
+            "Paths are relative to the TOML file unless absolute. "
+            "The <a href='#areadef'>classic area rules</a> also apply to SQLite area "
+            "matching, JAM base filenames and JAM writes.</p>"
+            "<p>A JAM area's <code>read_mode</code> overrides "
+            "<code>[jam].read_mode</code>. Both accept <code>strict</code> "
+            "or <code>lenient</code> and the built-in default is <code>strict</code>. "
+            "A per-area mode is only valid for JAM.</p>"
+            "<p>With neither source option, a nonempty <code>[areas]</code> table "
+            "takes precedence over <code>database</code>. With no areas, GoldED uses "
+            "<code>database</code> or defaults to <code>messages.sqlite3</code>. "
+            "An explicit <code>--database</code> or <code>--area-config</code> "
+            "uses its own message source and skips <code>[areas]</code> and "
+            "<code>[jam]</code> while still loading TOML preferences.</p>",
+        ),
+        (
+            "areadef",
+            "04",
             "Classic area configuration",
             "<p>Run <code>golded --area-config golded.cfg</code> to list areas from "
             "existing SQLite and JAM bases in configuration order. "
@@ -545,7 +580,7 @@ def config_page() -> str:
         ),
         (
             "errors",
-            "04",
+            "05",
             "Invalid values",
             "<p>A config <code>golded</code> cannot use stops it at startup with "
             "<code>Cannot read config PATH: …</code> and exit status 1: malformed "
@@ -563,7 +598,7 @@ def config_page() -> str:
         "Your name. Your address.",
         "golded --config PATH",
         "Configuration.",
-        "One TOML file and three options. Product name and version are fixed in the code.",
+        "Message sources, identity and display preferences.",
         sections,
     )
 
