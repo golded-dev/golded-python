@@ -263,8 +263,10 @@ def index_page() -> str:
                 "open a base",
                 "golded --database messages.sqlite3\n",
             )
-            + '<p>To open areas across bases, use <a href="config.html#areadef">'
-            "an AREADEF configuration</a>.</p>"
+            + '<p>To open areas across bases, use <a href="config.html#toml-areas">'
+            "the TOML area table</a> or "
+            '<a href="config.html#areadef">a classic AREADEF configuration</a>. '
+            "Use <code>--readonly</code> to browse with writes disabled.</p>"
             "<p>The splash screen counts down from "
             f"{DEFAULT_SPLASH_SECONDS} (<code>splash_seconds</code> in "
             '<a href="config.html">golded.toml</a>'
@@ -276,8 +278,20 @@ def index_page() -> str:
             '<a href="config.html">golded.toml</a> before you write.</p>',
         ),
         (
-            "manual",
+            "release",
             "02",
+            "New in 1.1.0",
+            '<p>GoldED opens <a href="database.html#what">JAM, Squish, FTSC MSG, '
+            "Opus and Hudson</a> alongside SQLite. You can read messages, compose "
+            "new ones and reply. A single configuration can mix formats.</p>"
+            '<p>Use <a href="config.html#options"><code>--readonly</code> and '
+            "<code>--debug</code></a> to browse and report on existing bases. "
+            '<a href="config.html#squish-modes">Squish read and write modes</a> '
+            "handle older bases that need more permissive reading or appends.</p>",
+        ),
+        (
+            "manual",
+            "03",
             "This manual",
             f'<ul class="contract-list">{pages}</ul>'
             "<p>Storage comes from the GoldED for Python libraries "
@@ -288,12 +302,12 @@ def index_page() -> str:
     return shell(
         "index.html",
         "golded · GoldED message reader",
-        "golded reads and writes FidoNet echomail and netmail stored in SQLite, "
+        "golded reads and writes FidoNet echomail and netmail stored in SQLite, JAM, Squish, MSG, Opus and Hudson, "
         "in a terminal UI modelled on GoldED.",
         "Old echomail. New terminal.",
         "golded",
         "A message reader for the terminal.",
-        "Read and write FidoNet echomail and netmail stored in SQLite. Area list, "
+        "Read and write FidoNet echomail and netmail across six message-base formats. Area list, "
         "message list, thread tree, quoting replies, two DOS-era themes.",
         sections,
     )
@@ -311,8 +325,35 @@ def database_page() -> str:
             "and a display name. <code>golded</code> lists the areas, reads their "
             "messages and appends the messages you write. It does not delete, edit "
             "or toss messages.</p>"
-            '<p>For JAM bases, see <a href="config.html#areadef">AREADEF configuration</a>.</p>'
-            "<p>Close the base in other programs while <code>golded</code> writes "
+            "<p>Open a single SQLite base with <code>--database</code>. To mix "
+            'bases and formats, use <a href="config.html#toml-areas">TOML areas</a> '
+            'or <a href="config.html#areadef">classic AREADEF entries</a>.</p>'
+            + table(
+                ("Format", "What to point GoldED at"),
+                [
+                    (
+                        "SQLite",
+                        "An existing <code>golded-ftn-sqlite</code> file and a matching area ID.",
+                    ),
+                    (
+                        "JAM",
+                        "A base filename without its <code>.JHR</code>, <code>.JDT</code> or <code>.JDX</code> suffix.",
+                    ),
+                    (
+                        "Squish",
+                        "A base filename without its <code>.SQD</code> or <code>.SQI</code> suffix.",
+                    ),
+                    (
+                        "FTSC MSG / Opus",
+                        "A directory containing numbered <code>.MSG</code> files. Choose the format that matches the headers.",
+                    ),
+                    (
+                        "Hudson",
+                        "A shared base directory and a board number from 1 to 200.",
+                    ),
+                ],
+            )
+            + "<p>Close the base in other programs while <code>golded</code> writes "
             "to it. A read-only file can still be read; saving then fails with a "
             "message in the status bar, and the draft stays open.</p>",
         ),
@@ -393,8 +434,8 @@ def database_page() -> str:
     return shell(
         "database.html",
         "Message bases · golded",
-        "The SQLite message base golded opens, and how to create one.",
-        "One file. Many areas.",
+        "Supported FidoNet message bases and how to create a SQLite base.",
+        "Choose a message base.",
         "golded --database PATH",
         "Message bases.",
         "What a base is, how to make one with ftnt, and the demo base for "
@@ -497,9 +538,10 @@ def config_page() -> str:
                         "<code>--debug</code>",
                         "off",
                         "Check each area and report readable message counts on stderr before "
-                        "opening the UI. Squish reports unlinked frames and the configured "
-                        "write mode. "
-                        "Use <code>2&gt;golded-debug.log</code> to keep the report.",
+                        "opening the UI. Squish strict reads report unlinked frames and "
+                        "the configured write mode. Archive and lenient reads report "
+                        "recovery categories. Save the report with "
+                        "<code>2&gt;golded-debug.log</code>.",
                     ),
                     (
                         "<code>--theme NAME</code>",
@@ -523,7 +565,11 @@ def config_page() -> str:
                 "[areas]\n"
                 'ARCHIVE = { description = "Archive", group = "A", type = "echo", format = "jam", path = "bases/archive", read_mode = "lenient" }\n'
                 '"FIDONET.GENERAL" = { description = "General discussion", group = "A", type = "echo", format = "jam", path = "bases/general" }\n'
-                'LOCAL = { description = "Local discussion", group = "A", type = "echo", format = "sqlite", path = "bases/local.sqlite3" }\n',
+                'LOCAL = { description = "Local discussion", group = "A", type = "echo", format = "sqlite", path = "bases/local.sqlite3" }\n'
+                'SQUISH = { description = "Old echo", group = "A", type = "echo", format = "squish", path = "bases/old", read_mode = "archive" }\n'
+                'NETMAIL = { description = "Netmail", group = "A", type = "net", format = "msg", path = "bases/netmail" }\n'
+                'OPUS = { description = "Opus echo", group = "A", type = "echo", format = "opus", path = "bases/opus" }\n'
+                'HUDSON = { description = "Shared echo", group = "A", type = "echo", format = "hudson", path = "bases/hudson", board = 7 }\n',
             )
             + "<p>Each entry requires <code>description</code>, <code>group</code>, "
             "<code>type</code>, <code>format</code> and <code>path</code>. "
@@ -536,15 +582,8 @@ def config_page() -> str:
             "<p>A JAM area's <code>read_mode</code> overrides "
             "<code>[jam].read_mode</code>. Both accept <code>strict</code> "
             "or <code>lenient</code> and the built-in default is <code>strict</code>. "
-            "Squish defaults to <code>strict</code>. Set "
-            '<code>read_mode = "archive"</code> on a Squish area to browse recoverable '
-            "messages with automatic write protection. The area status shows "
-            "recovered deviations, skipped records and stopped traversals. "
-            "<code>--debug</code> also lists the diagnostic categories. "
-            "Archive mode takes precedence over the area's write mode. "
-            'On a Squish archive area, add <code>msgid_conflict = "display"</code> '
-            "to show messages with conflicting MSGIDs. GoldED warns in the message "
-            "view and uses the index UID as the message identity.</p>"
+            'See <a href="#squish-modes">Squish read and write modes</a> for '
+            "Squish options.</p>"
             "<p>With neither source option, a nonempty <code>[areas]</code> table "
             "takes precedence over <code>database</code>. With no areas, GoldED uses "
             "<code>database</code> or defaults to <code>messages.sqlite3</code>. "
@@ -567,7 +606,11 @@ def config_page() -> str:
                 'AREADEF GENERAL "General discussion" A Echo SQLite "bases/echo.sqlite3" . ()\n'
                 'AREADEF NETMAIL "Private mail" #117 Net SQLite bases/mail.sqlite3 . ()\n'
                 'AREADEF UNIX "UNIX discussion" A Echo JAM bases/UNIX . ()\n'
-                'AREADEF LINUX "Linux discussion" A Echo Squish bases/LINUX . ()\n',
+                'AREADEF LINUX "Linux discussion" A Echo Squish bases/LINUX . ()\n'
+                'AREADEF FTSC "FTSC netmail" A Net MSG bases/netmail\n'
+                'AREADEF OPUS "Opus echo" A Echo Opus bases/opus\n'
+                "HUDSONPATH bases/hudson\n"
+                'AREADEF HUDSON "Shared echo" A Echo Hudson 7\n',
             )
             + "<p>Each AREADEF line gives the echo ID, quoted description, group, "
             "type, format and path. The group is a letter A–Z, 0, or #1–#999. "
@@ -603,10 +646,8 @@ def config_page() -> str:
             "the declared charset with CP850 as the fallback. Writes use CP850 "
             "and reject unencodable text and names or subjects that exceed the "
             "format's field sizes. Replies store the parent message UID. "
-            "Set "
-            '<code>write_mode = "allow_unlinked_append"</code> on an individual '
-            "Squish area in TOML to append past unlinked frames. The existing frames "
-            "are preserved and strict writing is the default.</p>"
+            'See <a href="#squish-modes">Squish read and write modes</a> for '
+            "per-area settings.</p>"
             "<p>For <code>MSG</code>, give the directory that holds the numbered "
             "<code>.MSG</code> files, for example "
             '<code>AREADEF NETMAIL "Netmail" A Net MSG bases/netmail</code>. '
@@ -635,8 +676,53 @@ def config_page() -> str:
             "Use literal paths on the current system.</p>",
         ),
         (
-            "errors",
+            "squish-modes",
             "05",
+            "Squish read and write modes",
+            "<p>Set these options per Squish area in <code>golded.toml</code>. "
+            "Classic AREADEF uses the strict defaults.</p>"
+            + table(
+                ("Read mode", "What happens"),
+                [
+                    (
+                        "<code>strict</code> (default)",
+                        "Use normal Squish validation when opening and reading the area.",
+                    ),
+                    (
+                        "<code>archive</code>",
+                        "Show recoverable messages and automatically make this area read-only, including when <code>--debug</code> is off.",
+                    ),
+                    (
+                        "<code>lenient</code>",
+                        "Use archive recovery and show messages with conflicting MSGIDs. GoldED marks them with <code>Conflicting MSGID</code> and uses the index UID. The configured write mode still applies.",
+                    ),
+                ],
+            )
+            + "<p>Archive and lenient modes report recovered deviations, skipped records "
+            "and stopped traversals. A stopped traversal may show only part of the base. "
+            "<code>--debug</code> includes the diagnostic categories.</p>"
+            '<p><code>write_mode = "strict"</code> is the default. '
+            "An area with unlinked frames can use <code>write_mode = "
+            '"allow_unlinked_append"</code> to append new messages and replies '
+            "while preserving the unlinked frames. The writer still validates "
+            "the rest of the base. Archive mode and <code>--readonly</code> disable writes.</p>"
+            + code_pane(
+                "squish-options-example",
+                "golded.toml",
+                "[areas]\n"
+                'HISTORY = { description = "History", group = "A", type = "echo", format = "squish", path = "bases/history", read_mode = "archive" }\n'
+                'NET = { description = "Netmail", group = "A", type = "net", format = "squish", path = "bases/net", read_mode = "lenient" }\n'
+                'LIVE = { description = "Live echo", group = "A", type = "echo", format = "squish", path = "bases/live", write_mode = "allow_unlinked_append" }\n',
+            )
+            + code_pane(
+                "archive-diagnostics",
+                "inspect the configured bases",
+                "golded --config golded.toml --readonly --debug 2>golded-debug.log\n",
+            ),
+        ),
+        (
+            "errors",
+            "06",
             "Invalid values",
             "<p>A config <code>golded</code> cannot use stops it at startup with "
             "<code>Cannot read config PATH: …</code> and exit status 1: malformed "
