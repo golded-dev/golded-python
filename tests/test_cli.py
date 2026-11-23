@@ -69,3 +69,45 @@ class CliErrorTests(unittest.TestCase):
         config.write_text('from_address = "nonsense"\n')
         output = self.fail_with("--config", str(config))
         self.assertIn("Invalid FTN address [nonsense]", output)
+
+    def test_bad_areadef(self) -> None:
+        config = self.dir / "golded.cfg"
+        config.write_text('AREADEF MAIL "Mail" A Echo JAM messages . ()\n')
+        output = self.fail_with("--area-config", str(config))
+        self.assertIn(f"{config}:1: unsupported message-base format JAM", output)
+
+    def test_area_config_opens_configured_areas_with_toml_preferences(self) -> None:
+        from golded.data.area import Area
+        from golded.data.store import create_message_store
+
+        create_message_store(
+            self.dir / "mail.sqlite3", [Area("MAIL", "Mail", "netmail")]
+        )
+        config = self.dir / "golded.cfg"
+        config.write_text(
+            'AREADEF mail "Private mail" 0 Net SQLite mail.sqlite3 . ()\n'
+        )
+        preferences = self.dir / "golded.toml"
+        preferences.write_text('database = "absent.sqlite3"\nfrom_name = "Alice"\n')
+        argv = [
+            "golded",
+            "--config",
+            str(preferences),
+            "--area-config",
+            str(config),
+            "--theme",
+            "light",
+        ]
+
+        with mock.patch("sys.argv", argv), mock.patch.object(cli, "run") as run:
+            cli.main()
+
+        run.assert_called_once()
+        store, theme, user_config = run.call_args.args
+        self.assertEqual(
+            [(area.code, area.name, area.kind) for area in store.areas()],
+            [("mail", "Private mail", "netmail")],
+        )
+        self.assertEqual(store.messages("mail"), ())
+        self.assertEqual(theme, "light")
+        self.assertEqual(user_config.from_name, "Alice")
