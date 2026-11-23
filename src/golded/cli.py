@@ -2,12 +2,27 @@ import argparse
 import sqlite3
 import sys
 
-from golded.data.store import open_configured_store, open_message_store
+from golded.data.store import (
+    MessageStore,
+    StartupAreaError,
+    open_configured_store,
+    open_message_store,
+)
 from golded.logic.user_config import THEME_NAMES, load_user_config
 from golded.ui.app import run
 
 DEFAULT_DATABASE = "messages.sqlite3"
 DEFAULT_CONFIG = "golded.toml"
+
+
+def report_areas(store: MessageStore) -> None:
+    print("Startup area diagnostics", file=sys.stderr)
+    for area in store.areas():
+        try:
+            result = store.startup_diagnostics(area.code)
+        except StartupAreaError as error:
+            result = f"check failed: {str(error)!r}"
+        print(f"Area {area.code!r}: {result}", file=sys.stderr)
 
 
 def main() -> None:
@@ -36,6 +51,9 @@ def main() -> None:
         help="colour theme (overrides config; toggle with F9)",
     )
     parser.add_argument(
+        "--debug", action="store_true", help="check and report areas at startup"
+    )
+    parser.add_argument(
         "--readonly", action="store_true", help="disable all message writes"
     )
     args = parser.parse_args()
@@ -59,6 +77,8 @@ def main() -> None:
         except (OSError, ValueError) as error:
             print(f"Cannot load area config {area_config}: {error}", file=sys.stderr)
             raise SystemExit(1) from None
+        if args.debug:
+            report_areas(store)
         run(store, theme, user_config)
         return
 
@@ -80,6 +100,8 @@ def main() -> None:
         print(f"Cannot open database {database}: {error}", file=sys.stderr)
         raise SystemExit(1) from None
 
+    if args.debug:
+        report_areas(store)
     run(store, theme, user_config)
 
 

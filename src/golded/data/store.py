@@ -1,13 +1,16 @@
 """Message store ABC and open/create entry points."""
 
+import sqlite3
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from pathlib import Path
 
-from golded_ftn import FtnAddress, OutgoingMessage, ParsedMessage
+from golded_ftn import FtnAddress, OutgoingMessage, ParsedMessage, ParserException
 
 from golded.data.area import Area
 from golded.data.area_config import ConfiguredArea
+
+StartupAreaError = (OSError, ParserException, ValueError, sqlite3.Error)
 
 
 class MessageStore(ABC):
@@ -18,6 +21,12 @@ class MessageStore(ABC):
 
     def read_status(self, area: str) -> str:
         return ""
+
+    def startup_diagnostics(self, area: str) -> str:
+        count = len(self.messages(area))
+        status = self.read_status(area)
+        summary = f"{count} readable messages"
+        return f"{summary}; {status}" if status else summary
 
     @abstractmethod
     def areas(self) -> tuple[Area, ...]:
@@ -54,6 +63,10 @@ class ReadOnlyMessageStore(MessageStore):
         if self._store.area_readonly(area):
             return status
         return f"Read-only · {status}" if status else "Read-only"
+
+    def startup_diagnostics(self, area: str) -> str:
+        summary = self._store.startup_diagnostics(area)
+        return summary if self._store.area_readonly(area) else f"{summary}; read-only"
 
     def messages(self, area: str) -> tuple[ParsedMessage, ...]:
         return self._store.messages(area)

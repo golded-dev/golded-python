@@ -296,6 +296,15 @@ class MessageViewScreen(Screen[int | None]):
         if self.__repair_mojibake:
             status = f"{status} | Mojibake"
 
+        controls = message.control_lines
+        if (
+            message.external_id is None
+            and controls is not None
+            and len({line.value for line in controls.kludges if line.name == "MSGID"})
+            > 1
+        ):
+            status = f"{status} | Conflicting MSGID"
+
         status_bar = self.query_one(StatusBar)
         status_bar.set_middle(status)
         status_bar.set_product(squared=has_golded_tagline(message.body_text))

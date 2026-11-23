@@ -193,9 +193,82 @@ class CliErrorTests(unittest.TestCase):
             ),
             (
                 "[areas]\n" + entry + ', format = "sqlite", read_mode = "strict" }\n',
-                "areas['MAIL'].read_mode is only valid for JAM areas",
+                "areas['MAIL'].read_mode is only valid for JAM and Squish areas",
             ),
         ):
             with self.subTest(content=content):
                 config.write_text(content)
                 self.assertIn(error, self.fail_with("--config", str(config)))
+
+    def test_debug_reports_area_and_continues_startup(self) -> None:
+        from golded.data.area import Area
+        from golded.data.store import create_message_store
+
+        database = self.dir / "mail.sqlite3"
+        create_message_store(database, [Area("MAIL", "Mail", "netmail")])
+        stderr = io.StringIO()
+        with (
+            mock.patch(
+                "sys.argv",
+                [
+                    "golded",
+                    "--config",
+                    str(self.dir / "absent.toml"),
+                    "--database",
+                    str(database),
+                    "--debug",
+                ],
+            ),
+            mock.patch.object(cli, "run") as run,
+            redirect_stderr(stderr),
+        ):
+            cli.main()
+
+        self.assertIn("Area 'MAIL': 0 readable messages", stderr.getvalue())
+        run.assert_called_once()
+
+    def test_readonly_opens_without_allowing_mutation(self) -> None:
+        from golded_ftn import OutgoingMessage
+
+        from golded.data.area import Area
+        from golded.data.store import create_message_store
+        from golded.logic.session import Session
+
+        database = self.dir / "mail.sqlite3"
+        original = create_message_store(database, [Area("MAIL", "Mail")])
+        message = OutgoingMessage(
+            from_name="Alice", to_name="All", subject="Original", body_text="Body"
+        )
+        uid = original.append("MAIL", message)
+        before = database.read_bytes()
+        with (
+            mock.patch(
+                "sys.argv",
+                [
+                    "golded",
+                    "--config",
+                    str(self.dir / "absent.toml"),
+                    "--database",
+                    str(database),
+                    "--readonly",
+                ],
+            ),
+            mock.patch.object(cli, "run") as run,
+        ):
+            cli.main()
+
+        store, _, config = run.call_args.args
+        self.assertEqual(store.message("MAIL", uid).subject, "Original")
+        self.assertIn("Read-only", store.read_status("MAIL"))
+        with self.assertRaises(PermissionError):
+            store.append("MAIL", message)
+        with self.assertRaises(PermissionError):
+            store.delete("MAIL", uid)
+        session = Session(store, config)
+        session.select_area("MAIL")
+        session.select_message(uid)
+        session.start_draft_message()
+        self.assertIsNone(session.draft_message())
+        session.start_reply_draft("Body")
+        self.assertIsNone(session.draft_message())
+        self.assertEqual(database.read_bytes(), before)

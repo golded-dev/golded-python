@@ -354,6 +354,7 @@ dependencies = [
     { name = "golded-ftn-jam" },
     { name = "golded-ftn-msg" },
     { name = "golded-ftn-sqlite" },
+    { name = "golded-ftn-squish" },
     { name = "rich" },
     { name = "textual" },
 ]
@@ -376,6 +377,7 @@ requires-dist = [
     { name = "golded-ftn-jam", specifier = ">=1.3.1,<2" },
     { name = "golded-ftn-msg", specifier = ">=1.4.0,<2" },
     { name = "golded-ftn-sqlite", specifier = ">=1.1.0,<2" },
+    { name = "golded-ftn-squish", specifier = ">=1.4.0,<2" },
     { name = "rich", specifier = ">=14.2.0" },
     { name = "textual", specifier = ">=8.2.8,<9" },
 ]
@@ -446,6 +448,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ce/a0/0ab40de8571862b2a73d64b37e20a509996ff059b71c8d4063805b105779/golded_ftn_sqlite-1.1.0.tar.gz", hash = "sha256:ce84f158139f7fa5340d0d840a519749ebf8fb007aaa17f2f4c1e2e8c8de69f5", size = 20501, upload-time = "2026-10-27T18:09:29.914Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/42/d0/71f3acb4ddeb74faa56fe3db181c8bebf44ccf5437c6fa426f17d7dfb74f/golded_ftn_sqlite-1.1.0-py3-none-any.whl", hash = "sha256:16dd03e87560802640f2c4e880f73f3a27947ba67379896df3dad2c5ebed7c0a", size = 11877, upload-time = "2026-10-27T18:09:28.558Z" },
+]
+
+[[package]]
+name = "golded-ftn-squish"
+version = "1.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "golded-ftn" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c1/fc/a2d3569e3cdfc3aa7270c3eda778a17fc4465a692ec6b588b6b7b1868dd4/golded_ftn_squish-1.4.0.tar.gz", hash = "sha256:7ba092f4237c3066afecc97e430df03786ec00c0971cfdf51963ea204fb7e1eb", size = 44724, upload-time = "2026-11-23T16:33:28.681Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a8/dd/0544e02d5ec8dd3960bfe2f9705686a8b783b9fdde99bb5472dc8f6a50a0/golded_ftn_squish-1.4.0-py3-none-any.whl", hash = "sha256:65d6d0abc880a021b80ac0b65c2f36aaba2c8fd46171f73e907cd94c015f68ac", size = 27456, upload-time = "2026-11-23T16:33:27.418Z" },
 ]
 
 [[package]]

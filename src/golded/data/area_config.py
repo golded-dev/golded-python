@@ -39,6 +39,9 @@ class ConfiguredArea:
     line: int | None = None
     lenient: bool = False
     board: int | None = None
+    allow_unlinked_append: bool = False
+    archive: bool = False
+    display_msgid_conflict: bool = False
 
 
 def load_area_config(path: Path) -> tuple[ConfiguredArea, ...]:
@@ -148,11 +151,36 @@ def parse_toml_areas(areas: object, jam: object) -> tuple[ConfiguredArea, ...]:
         )
         validate_area_identity(code, group, codes, source)
         is_jam = format_name.casefold() == "jam"
+        is_squish = format_name.casefold() == "squish"
         lenient = is_jam and default
+        archive = False
+        display_msgid_conflict = False
         if "read_mode" in fields:
-            if not is_jam:
-                raise ValueError(f"{source}.read_mode is only valid for JAM areas")
-            lenient = _toml_read_mode(fields["read_mode"], f"{source}.read_mode")
+            read_mode = fields["read_mode"]
+            if is_jam:
+                lenient = _toml_read_mode(read_mode, f"{source}.read_mode")
+            elif is_squish:
+                if not isinstance(read_mode, str) or read_mode.lower() not in (
+                    "strict",
+                    "archive",
+                    "lenient",
+                ):
+                    raise ValueError(
+                        f"{source}.read_mode must be strict, archive or lenient"
+                    )
+                archive = read_mode.lower() != "strict"
+                display_msgid_conflict = read_mode.lower() == "lenient"
+            else:
+                raise ValueError(
+                    f"{source}.read_mode is only valid for JAM and Squish areas"
+                )
+        write_mode = fields.get("write_mode", "strict")
+        if "write_mode" in fields and not is_squish:
+            raise ValueError(f"{source}.write_mode is only valid for Squish areas")
+        if write_mode not in ("strict", "allow_unlinked_append"):
+            raise ValueError(
+                f"{source}.write_mode must be strict or allow_unlinked_append"
+            )
         if format_name.casefold() == "hudson":
             board = _hudson_board(fields.get("board"), source)
         elif "board" in fields:
@@ -169,6 +197,9 @@ def parse_toml_areas(areas: object, jam: object) -> tuple[ConfiguredArea, ...]:
                 location,
                 lenient=lenient,
                 board=board,
+                allow_unlinked_append=write_mode == "allow_unlinked_append",
+                archive=archive,
+                display_msgid_conflict=display_msgid_conflict,
             )
         )
     return tuple(entries)

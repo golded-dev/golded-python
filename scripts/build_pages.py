@@ -489,7 +489,17 @@ def config_page() -> str:
                     (
                         "<code>--readonly</code>",
                         "off",
-                        "Browse areas with new messages and replies disabled.",
+                        "Browse areas with new messages and replies disabled. "
+                        "Overrides an area's write mode. Combine with "
+                        "<code>--debug</code> to check archived bases.",
+                    ),
+                    (
+                        "<code>--debug</code>",
+                        "off",
+                        "Check each area and report readable message counts on stderr before "
+                        "opening the UI. Squish reports unlinked frames and the configured "
+                        "write mode. "
+                        "Use <code>2&gt;golded-debug.log</code> to keep the report.",
                     ),
                     (
                         "<code>--theme NAME</code>",
@@ -519,14 +529,22 @@ def config_page() -> str:
             "<code>type</code>, <code>format</code> and <code>path</code>. "
             "Use a group of A–Z, 0 or #1–#999 as a quoted string. Use "
             "<code>echo</code> or <code>net</code> for the type, and "
-            "<code>jam</code>, <code>msg</code>, <code>opus</code>, <code>hudson</code> or <code>sqlite</code> for the format. "
+            "<code>jam</code>, <code>squish</code>, <code>msg</code>, <code>opus</code>, <code>hudson</code> or <code>sqlite</code> for the format. "
             "Paths are relative to the TOML file unless absolute. "
             "The <a href='#areadef'>classic area rules</a> also apply to SQLite area "
             "matching, JAM base filenames and JAM writes.</p>"
             "<p>A JAM area's <code>read_mode</code> overrides "
             "<code>[jam].read_mode</code>. Both accept <code>strict</code> "
             "or <code>lenient</code> and the built-in default is <code>strict</code>. "
-            "A per-area mode is only valid for JAM.</p>"
+            "Squish defaults to <code>strict</code>. Set "
+            '<code>read_mode = "archive"</code> on a Squish area to browse recoverable '
+            "messages with automatic write protection. The area status shows "
+            "recovered deviations, skipped records and stopped traversals. "
+            "<code>--debug</code> also lists the diagnostic categories. "
+            "Archive mode takes precedence over the area's write mode. "
+            'On a Squish archive area, add <code>msgid_conflict = "display"</code> '
+            "to show messages with conflicting MSGIDs. GoldED warns in the message "
+            "view and uses the index UID as the message identity.</p>"
             "<p>With neither source option, a nonempty <code>[areas]</code> table "
             "takes precedence over <code>database</code>. With no areas, GoldED uses "
             "<code>database</code> or defaults to <code>messages.sqlite3</code>. "
@@ -539,7 +557,7 @@ def config_page() -> str:
             "04",
             "Classic area configuration",
             "<p>Run <code>golded --area-config golded.cfg</code> to list areas from "
-            "existing SQLite, JAM, MSG, Opus and Hudson bases in configuration order. "
+            "existing SQLite, JAM, Squish, MSG, Opus and Hudson bases in configuration order. "
             "This option replaces the TOML <code>database</code> setting and "
             "cannot be combined with <code>--database</code>. "
             "Keep identity, origin and display preferences in <code>golded.toml</code>.</p>"
@@ -548,7 +566,8 @@ def config_page() -> str:
                 "golded.cfg",
                 'AREADEF GENERAL "General discussion" A Echo SQLite "bases/echo.sqlite3" . ()\n'
                 'AREADEF NETMAIL "Private mail" #117 Net SQLite bases/mail.sqlite3 . ()\n'
-                'AREADEF UNIX "UNIX discussion" A Echo JAM bases/UNIX . ()\n',
+                'AREADEF UNIX "UNIX discussion" A Echo JAM bases/UNIX . ()\n'
+                'AREADEF LINUX "Linux discussion" A Echo Squish bases/LINUX . ()\n',
             )
             + "<p>Each AREADEF line gives the echo ID, quoted description, group, "
             "type, format and path. The group is a letter A–Z, 0, or #1–#999. "
@@ -577,6 +596,17 @@ def config_page() -> str:
             "status bar. A stopped traversal may show only part of the base. "
             "JAM writing still validates the entire base strictly. If that check "
             "fails, the composer shows the error and keeps the draft open.</p>"
+            "<p>For <code>Squish</code>, use the base filename without the "
+            "<code>.SQD</code> or <code>.SQI</code> suffix. Both files must exist; "
+            "lowercase suffixes also work. Each base represents one area. "
+            "Keep it closed in other programs while GoldED uses it. Reads honor "
+            "the declared charset with CP850 as the fallback. Writes use CP850 "
+            "and reject unencodable text and names or subjects that exceed the "
+            "format's field sizes. Replies store the parent message UID. "
+            "Set "
+            '<code>write_mode = "allow_unlinked_append"</code> on an individual '
+            "Squish area in TOML to append past unlinked frames. The existing frames "
+            "are preserved and strict writing is the default.</p>"
             "<p>For <code>MSG</code>, give the directory that holds the numbered "
             "<code>.MSG</code> files, for example "
             '<code>AREADEF NETMAIL "Netmail" A Net MSG bases/netmail</code>. '

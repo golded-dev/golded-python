@@ -11,6 +11,7 @@ from golded.data.area_config import ConfiguredArea, area_code_key, load_area_con
 from golded.data.hudson_store import HudsonBase, HudsonMessageStore
 from golded.data.jam_store import JamMessageStore
 from golded.data.msg_store import MsgMessageStore
+from golded.data.squish_store import SquishMessageStore
 from golded.data.store import MessageStore, open_message_store
 
 _AREA_KINDS = {"echo": "echomail", "net": "netmail"}
@@ -30,9 +31,17 @@ class ConfiguredMessageStore(MessageStore):
     def areas(self) -> tuple[Area, ...]:
         return tuple(route.area for route in self._routes.values())
 
+    def area_readonly(self, area: str) -> bool:
+        route = self._routes[area]
+        return route.store.area_readonly(route.code)
+
     def read_status(self, area: str) -> str:
         route = self._routes[area]
         return route.store.read_status(route.code)
+
+    def startup_diagnostics(self, area: str) -> str:
+        route = self._routes[area]
+        return route.store.startup_diagnostics(route.code)
 
     def messages(self, area: str) -> tuple[ParsedMessage, ...]:
         route = self._routes[area]
@@ -67,7 +76,7 @@ def open_configured_store(
             else f"{path}: areas[{entry.code!r}]"
         )
         format_name = entry.format.casefold()
-        if format_name not in {"sqlite", "jam", "msg", "opus", "hudson"}:
+        if format_name not in {"sqlite", "jam", "squish", "msg", "opus", "hudson"}:
             raise ValueError(
                 f"{source}: unsupported message-base format {entry.format}"
             )
@@ -77,14 +86,26 @@ def open_configured_store(
 
         database = (path.parent / entry.location).resolve()
         area = Area(entry.code, entry.description, kind)
-        if format_name == "jam":
+        if format_name in {"jam", "squish"}:
             try:
-                jam = JamMessageStore(database, area, lenient=entry.lenient)
+                area_store: MessageStore = (
+                    JamMessageStore(database, area, lenient=entry.lenient)
+                    if format_name == "jam"
+                    else SquishMessageStore(
+                        database,
+                        area,
+                        allow_unlinked_append=entry.allow_unlinked_append,
+                        readonly=readonly,
+                        archive=entry.archive,
+                        display_msgid_conflict=entry.display_msgid_conflict,
+                    )
+                )
             except (OSError, ParserException, ValueError) as error:
+                label = "JAM" if format_name == "jam" else "Squish"
                 raise ValueError(
-                    f"{source}: cannot open JAM base {database}: {error}"
+                    f"{source}: cannot open {label} base {database}: {error}"
                 ) from error
-            routes[entry.code] = AreaRoute(area, jam, entry.code)
+            routes[entry.code] = AreaRoute(area, area_store, entry.code)
             continue
 
         if format_name in {"msg", "opus"}:

@@ -69,8 +69,8 @@ def test_session_routes_configured_areas_to_separate_databases(tmp_path: Path) -
         ('AREADEF ONE "Bad group" #1000 Echo SQLite base.db', "invalid group"),
         ('AREADEF ONE "Bad type" A Else SQLite base.db', "unsupported area type"),
         (
-            'AREADEF ONE "Classic" A Echo Squish base . ()',
-            "unsupported message-base format Squish",
+            'AREADEF ONE "Classic" A Echo Gold base . ()',
+            "unsupported message-base format Gold",
         ),
     ],
 )
@@ -83,6 +83,143 @@ def test_invalid_area_reports_config_line(
         open_configured_store(config)
     assert f"{config}:2:" in str(raised.value)
     assert reason in str(raised.value)
+
+
+def test_squish_session_reads_writes_and_replies(tmp_path: Path) -> None:
+    from golded_ftn_squish import SquishReader, SquishWriter
+
+    base = tmp_path / "squish.area"
+    writer = SquishWriter()
+    writer.create(base)
+    with writer.open(base) as opened:
+        parent = opened.append(
+            OutgoingMessage(
+                from_name="Alice", to_name="All", subject="Original", body_text="Hej"
+            )
+        ).identity.msgno
+    create_message_store(tmp_path / "local.db", [Area("LOCAL", "Local")])
+    config = tmp_path / "golded.cfg"
+    config.write_text(
+        'AREADEF LOCAL "Local" A Echo SQLite local.db\n'
+        'AREADEF SQUISH "Squish area" B Echo Squish squish.area\n'
+    )
+    session = Session(open_configured_store(config), UserConfig(from_name="Carol"))
+    assert [area.code for area in session.areas()] == ["LOCAL", "SQUISH"]
+    session.select_area("SQUISH")
+    assert [message.subject for message in session.messages()] == ["Original"]
+    session.start_draft_message()
+    session.set_draft_message(
+        OutgoingMessage(
+            from_name="Carol", to_name="All", subject="New", body_text="Blåbær"
+        )
+    )
+    new = session.save_draft_message()
+    session.select_message(parent)
+    session.start_reply_draft("Hej")
+    reply = session.save_draft_message()
+
+    messages = {message.msgno: message for message in SquishReader().read(base)}
+    assert new is not None and "Blåbær" in messages[new].body_text
+    assert messages[new].posted_at is not None
+    assert reply is not None and messages[reply].reply_to_msgno == parent
+    assert [message.subject for message in session.messages()] == [
+        "Original",
+        "New",
+        "Re: Original",
+    ]
+    session.select_area("LOCAL")
+    assert session.messages() == ()
+
+
+def test_squish_archive_mode_is_readonly_per_area(tmp_path: Path) -> None:
+    from struct import pack_into
+
+    from golded_ftn_squish import SquishWriter
+
+    from golded.logic.user_config import load_user_config
+
+    base = tmp_path / "archive"
+    writer = SquishWriter()
+    writer.create(base)
+    outgoing = OutgoingMessage(
+        from_name="Alice", to_name="All", subject="Original", body_text="Body"
+    )
+    with writer.open(base) as opened:
+        uid = opened.append(outgoing).identity.msgno
+    sidecar = base.with_suffix(".SQD")
+    data = bytearray(sidecar.read_bytes())
+    pack_into("<I", data, 256 + 28 + 214, uid + 1)
+    sidecar.write_bytes(data)
+    create_message_store(tmp_path / "local.db", [Area("LOCAL", "Local")])
+    config = tmp_path / "golded.toml"
+    entry = (
+        'ARCHIVE = { description = "Archive", group = "A", type = "echo", '
+        'format = "squish", path = "archive"'
+    )
+    config.write_text("[areas]\n" + entry + " }\n")
+    with pytest.raises(ValueError, match="Header UID disagrees with index"):
+        open_configured_store(config, entries=load_user_config(config).areas)
+
+    config.write_text(
+        "[areas]\n"
+        + entry
+        + ', read_mode = "archive", write_mode = "allow_unlinked_append" }\n'
+        + 'LOCAL = { description = "Local", group = "A", type = "echo", '
+        'format = "sqlite", path = "local.db" }\n'
+    )
+    preferences = load_user_config(config)
+    store = open_configured_store(config, entries=preferences.areas)
+    session = Session(store, preferences)
+    session.select_area("ARCHIVE")
+    assert session.readonly()
+    assert store.message("ARCHIVE", uid).subject == "Original"
+    assert "1 recovered, 0 skipped, 0 stopped" in store.read_status("ARCHIVE")
+    assert "header_uid_mismatch" in store.startup_diagnostics("ARCHIVE")
+    session.select_message(uid)
+    session.start_reply_draft("Body")
+    assert session.draft_message() is None
+    with pytest.raises(PermissionError):
+        store.append("ARCHIVE", outgoing)
+    with pytest.raises(PermissionError):
+        store.delete("ARCHIVE", uid)
+    assert sidecar.read_bytes() == data
+
+    session.select_area("LOCAL")
+    assert not session.readonly()
+    assert store.append("LOCAL", outgoing) == 1
+
+
+def test_squish_lenient_read_allows_writing_unless_explicitly_readonly(
+    tmp_path: Path,
+) -> None:
+    import golded_ftn_squish
+
+    from golded.logic.user_config import load_user_config
+
+    golded_ftn_squish.SquishWriter().create(tmp_path / "base")
+    config = tmp_path / "golded.toml"
+    config.write_text(
+        '[areas]\nTEST = { description = "Test", group = "A", type = "echo", '
+        'format = "squish", path = "base", read_mode = "lenient" }\n'
+    )
+    preferences = load_user_config(config)
+    store = open_configured_store(config, entries=preferences.areas)
+    session = Session(store, preferences)
+    session.select_area("TEST")
+    assert not session.readonly()
+    session.start_draft_message()
+    session.set_draft_message(
+        OutgoingMessage(
+            from_name="Alice", to_name="All", subject="New", body_text="Body"
+        )
+    )
+    assert session.save_draft_message() == 2
+    assert store.message("TEST", 2).subject == "New"
+
+    readonly = open_configured_store(config, entries=preferences.areas, readonly=True)
+    assert readonly.area_readonly("TEST")
+    with pytest.raises(PermissionError):
+        readonly.delete("TEST", 2)
 
 
 @pytest.mark.parametrize("toml", [False, True])
