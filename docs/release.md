@@ -27,11 +27,10 @@ terminal, so say so if a Windows bug report comes in.
 CI resolves public dependencies with `uv sync --locked --no-sources`. Do not point
 CI at a private workspace or an unpinned sibling branch.
 
-A maintainer must create and protect the GitHub `pypi` environment with required
-reviewers, register the exact repository owner/name, workflow `publish.yml` and
+A maintainer must configure the GitHub `pypi` environment, register the exact
+repository owner/name, workflow `publish.yml` and
 environment `pypi` as the PyPI Trusted Publisher, and enable the repository's
-Actions workflows. The `pypi` environment exists, requires the maintainer's
-review and allows deployments from `main` only. `publish.yml` runs by hand with a
+Actions workflows. The `pypi` environment allows deployments from `main` only. `publish.yml` runs by hand with a
 release tag: it downloads the reviewed GitHub release assets, verifies
 `RELEASE-SHA256.txt`, then requests an OIDC identity. No API token is required or
 included. This document does not create that configuration or prove it exists.
