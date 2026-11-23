@@ -346,7 +346,7 @@ wheels = [
 
 [[package]]
 name = "golded"
-version = "1.0.0"
+version = "1.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "golded-ftn" },
@@ -372,7 +372,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "golded-ftn", specifier = ">=1.5.1,<2" },
+    { name = "golded-ftn", specifier = ">=1.5.2,<2" },
     { name = "golded-ftn-hudson", specifier = ">=1.4.0,<2" },
     { name = "golded-ftn-jam", specifier = ">=1.3.1,<2" },
     { name = "golded-ftn-msg", specifier = ">=1.4.0,<2" },
@@ -395,11 +395,11 @@ dev = [
 
 [[package]]
 name = "golded-ftn"
-version = "1.5.1"
+version = "1.5.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/04/22/51a6d0df2652f941f114d997c06642ccf17128ef89b65fecd6d603837de6/golded_ftn-1.5.1.tar.gz", hash = "sha256:c0975141e2ef5ddcc3aaca5e79cc16f63f83730e674364c14fce6910fabcbfb5", size = 65242, upload-time = "2026-10-29T11:27:34.377Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/23/2c/c476e1bd4f3b2d58571b239e9847d264bcf7a9f55c1ef6742ae38e3262f4/golded_ftn-1.5.2.tar.gz", hash = "sha256:d15a63d96751380eabb56828b0ce8b0237f77e0e5766280cbdc9c5710cfd4498", size = 65566, upload-time = "2026-11-23T20:36:47.506Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/63/06/023c6058fab9f4297cae72eacd009ac2733cf5b7d8849a1fb085f8bae8c1/golded_ftn-1.5.1-py3-none-any.whl", hash = "sha256:a5f8d0cae62acfc377201c10151ca8db0cb8454f531a5d63f5208adb6246ba8a", size = 29624, upload-time = "2026-10-29T11:27:32.986Z" },
+    { url = "https://files.pythonhosted.org/packages/fc/35/d171e1d37c06460d7b42996a28a36a2c32f7c7bfc950bf90957498e8a031/golded_ftn-1.5.2-py3-none-any.whl", hash = "sha256:9d59dafa864ca983d8044d827b8087e44c5d7283330d2425bd4d2db383db9fb3", size = 29741, upload-time = "2026-11-23T20:36:46.404Z" },
 ]
 
 [[package]]

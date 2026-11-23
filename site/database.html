@@ -19,7 +19,7 @@
 <div><span>GoldED/Py</span><a href="https://golded-dev.github.io/golded-ftn-python-docs/">Library docs ↗</a></div>
 </header>
 <div class="shell">
-<div class="bar"><span>GOLDED / MESSAGE READER</span><span>RELEASED 1.0.0 · PYTHON 3.12+</span></div>
+<div class="bar"><span>GOLDED / MESSAGE READER</span><span>RELEASED 1.1.0 · PYTHON 3.12+</span></div>
 <div class="layout">
 <aside><div class="sidebar">
 <nav class="page-nav" aria-label="Manual"><a href="index.html">Home</a><a href="database.html" aria-current="page">Message bases</a><a href="config.html">Configuration</a><a href="keys.html">Keys</a><a href="screens.html">Screens</a></nav>
@@ -34,7 +34,7 @@ uv run python scripts/seed_demo.py
 uv run golded
 </code></pre></div><p class="note"><strong>It deletes first.</strong> The seeder removes <code>messages.sqlite3</code> and its <code>-wal</code> and <code>-shm</code> files before writing. Do not run it next to a base you want to keep.</p></section><section class="guide-section" id="errors"><div class="section-title"><span>03</span><h2>When it will not open</h2></div><p>Startup problems print one line on stderr and exit with status 1.</p><div class="table-wrap"><table><thead><tr><th>Situation</th><th>Message</th></tr></thead><tbody><tr><td>No file at the path</td><td><code>Database not found: PATH</code>, then a hint</td></tr><tr><td>Not an SQLite file</td><td><code>Cannot open database PATH: file is not a database</code></td></tr><tr><td>SQLite, but another schema or version</td><td><code>Cannot open database PATH: not a supported golded-ftn-sqlite database</code></td></tr><tr><td>Directory not writable</td><td><code>Cannot open database PATH: attempt to write a readonly database</code></td></tr></tbody></table></div></section></main>
 </div></div>
-<footer><span>GoldED/Py / GoldED.dev</span><span>RELEASED 1.0.0 · MIT LICENSE</span></footer>
+<footer><span>GoldED/Py / GoldED.dev</span><span>RELEASED 1.1.0 · MIT LICENSE</span></footer>
 </div>
 
 <script>
