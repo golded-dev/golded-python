@@ -9,6 +9,7 @@ from golded_ftn import OutgoingMessage, ParsedMessage, ParserException
 from golded.data.area import Area
 from golded.data.area_config import ConfiguredArea, area_code_key, load_area_config
 from golded.data.jam_store import JamMessageStore
+from golded.data.msg_store import MsgMessageStore
 from golded.data.store import MessageStore, open_message_store
 
 _AREA_KINDS = {"echo": "echomail", "net": "netmail"}
@@ -61,7 +62,7 @@ def open_configured_store(
             else f"{path}: areas[{entry.code!r}]"
         )
         format_name = entry.format.casefold()
-        if format_name not in {"sqlite", "jam"}:
+        if format_name not in {"sqlite", "jam", "msg", "opus"}:
             raise ValueError(
                 f"{source}: unsupported message-base format {entry.format}"
             )
@@ -79,6 +80,16 @@ def open_configured_store(
                     f"{source}: cannot open JAM base {database}: {error}"
                 ) from error
             routes[entry.code] = AreaRoute(area, jam, entry.code)
+            continue
+
+        if format_name in {"msg", "opus"}:
+            try:
+                msg = MsgMessageStore(database, area, opus=format_name == "opus")
+            except (OSError, ParserException, ValueError) as error:
+                raise ValueError(
+                    f"{source}: cannot open {entry.format} area {database}: {error}"
+                ) from error
+            routes[entry.code] = AreaRoute(area, msg, entry.code)
             continue
 
         if database not in stores:

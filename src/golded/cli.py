@@ -35,6 +35,9 @@ def main() -> None:
         default=None,
         help="colour theme (overrides config; toggle with F9)",
     )
+    parser.add_argument(
+        "--readonly", action="store_true", help="disable all message writes"
+    )
     args = parser.parse_args()
 
     try:
@@ -50,7 +53,9 @@ def main() -> None:
         area_config = args.area_config if args.area_config is not None else args.config
         entries = None if args.area_config is not None else user_config.areas
         try:
-            store = open_configured_store(area_config, entries=entries)
+            store = open_configured_store(
+                area_config, entries=entries, readonly=args.readonly
+            )
         except (OSError, ValueError) as error:
             print(f"Cannot load area config {area_config}: {error}", file=sys.stderr)
             raise SystemExit(1) from None
@@ -65,7 +70,7 @@ def main() -> None:
         database = args.database
 
     try:
-        store = open_message_store(database)
+        store = open_message_store(database, readonly=args.readonly)
     except FileNotFoundError:
         print(f"Database not found: {database}", file=sys.stderr)
         print("Pass --database PATH or set database in golded.toml.", file=sys.stderr)

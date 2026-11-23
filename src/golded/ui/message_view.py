@@ -219,8 +219,11 @@ class MessageViewScreen(Screen[int | None]):
     def show_title(self, width: int) -> None:
         area_code = self.__session.selected_area()
         assert area_code is not None, "message view without a selected area"
+        name = self.__session.area_name(area_code)
+        if self.__session.readonly():
+            name = f"Read-only · {name}"
         title = area_title_line(
-            self.__session.area_name(area_code),
+            name,
             area_code,
             width,
             ged_color(self.app, "line"),

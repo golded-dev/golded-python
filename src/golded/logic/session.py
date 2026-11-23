@@ -34,6 +34,12 @@ class Session:
     def areas(self) -> tuple[Area, ...]:
         return self.__store.areas()
 
+    def readonly(self) -> bool:
+        area = self.__selected_area
+        return (
+            self.__store.readonly if area is None else self.__store.area_readonly(area)
+        )
+
     def area_read_status(self, area: str) -> str:
         return self.__store.read_status(area)
 
@@ -193,7 +199,7 @@ class Session:
         return "echomail"
 
     def start_draft_message(self) -> None:
-        if self.__selected_area is None:
+        if self.readonly() or self.__selected_area is None:
             return
 
         to_name = ""
@@ -219,7 +225,7 @@ class Session:
         body_for_quote: str,
         subject_for_reply: str | None = None,
     ) -> None:
-        if self.__selected_area is None:
+        if self.readonly() or self.__selected_area is None:
             return
 
         message = self.current_message()
