@@ -255,15 +255,17 @@ def index_page() -> str:
             "first-run",
             "01",
             "First run",
-            "<p><code>golded</code> opens one SQLite message base. By default it "
-            "looks for <code>messages.sqlite3</code> and <code>golded.toml</code> "
+            "<p>By default, <code>golded</code> looks for "
+            "<code>messages.sqlite3</code> and <code>golded.toml</code> "
             "in the current directory.</p>"
             + code_pane(
                 "first-run-code",
                 "open a base",
                 "golded --database messages.sqlite3\n",
             )
-            + "<p>The splash screen counts down from "
+            + '<p>To open areas across bases, use <a href="config.html#areadef">'
+            "an AREADEF configuration</a>.</p>"
+            "<p>The splash screen counts down from "
             f"{DEFAULT_SPLASH_SECONDS} (<code>splash_seconds</code> in "
             '<a href="config.html">golded.toml</a>'
             "); any key skips it. "
@@ -479,6 +481,11 @@ def config_page() -> str:
                         "SQLite message base",
                     ),
                     (
+                        "<code>--area-config PATH</code>",
+                        "none",
+                        "Read <a href='#areadef'>AREADEF entries</a> instead of opening one base.",
+                    ),
+                    (
                         "<code>--theme NAME</code>",
                         "from config, else <code>dark</code>",
                         "<code>dark</code> or <code>light</code>",
@@ -487,8 +494,36 @@ def config_page() -> str:
             ),
         ),
         (
-            "errors",
+            "areadef",
             "03",
+            "Classic area configuration",
+            "<p>Run <code>golded --area-config golded.cfg</code> to list areas from "
+            "one or more existing SQLite bases in configuration order. "
+            "This option replaces the TOML <code>database</code> setting and "
+            "cannot be combined with <code>--database</code>. "
+            "Keep identity, origin and display preferences in <code>golded.toml</code>.</p>"
+            + code_pane(
+                "areadef-example",
+                "golded.cfg",
+                'AREADEF GENERAL "General discussion" A Echo SQLite "bases/echo.sqlite3" . ()\n'
+                'AREADEF NETMAIL "Private mail" #117 Net SQLite bases/mail.sqlite3 . ()\n',
+            )
+            + "<p>Each AREADEF line gives the echo ID, quoted description, group, "
+            "type, format and path. The group is a letter A–Z, 0, or #1–#999. "
+            "<code>Echo</code> and <code>Net</code> must match the existing area's "
+            "type. Echo IDs are matched without regard to ASCII case and must be unique in "
+            "the configuration. Paths are relative to the configuration file "
+            "unless absolute. Save the file as UTF-8.</p>"
+            "<p><code>SQLite</code> is a GoldED.py extension and is the supported "
+            "format. The optional classic tail <code>aka (attrs) [origin]</code> "
+            "and group are accepted without applying area-specific settings. "
+            "Semicolons outside quoted fields start comments. Other directives, "
+            "including <code>INCLUDE</code> and <code>AREAFILE</code>, are ignored. "
+            "Use literal paths on the current system.</p>",
+        ),
+        (
+            "errors",
+            "04",
             "Invalid values",
             "<p>A config <code>golded</code> cannot use stops it at startup with "
             "<code>Cannot read config PATH: …</code> and exit status 1: malformed "

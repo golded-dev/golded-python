@@ -19,7 +19,7 @@ Python 3.12 or newer, on Linux, macOS or Windows. `pipx install golded` works to
 golded --database messages.sqlite3
 ```
 
-`golded` opens one golded-ftn-sqlite base. Without options it looks for `messages.sqlite3` and `golded.toml` in the current directory. The manual shows how to create a base with `ftnt` from [`golded-ftn-tools`](https://pypi.org/project/golded-ftn-tools/).
+`golded --database` opens one golded-ftn-sqlite base. Without options it looks for `messages.sqlite3` and `golded.toml` in the current directory. The manual shows how to create a base with `ftnt` from [`golded-ftn-tools`](https://pypi.org/project/golded-ftn-tools/).
 
 `↑` `↓` and `Enter` pick an area and a message, `←` `→` step through messages, `r` replies, `F2` saves, `Esc` goes back and quits from the area list.
 
@@ -38,6 +38,15 @@ splash_seconds = 10
 ```
 
 `--config`, `--database` and `--theme` override the file. A value golded cannot use stops it at startup with one line and exit status 1. The manual describes each field.
+
+For areas spread across SQLite bases, use `golded --area-config golded.cfg`:
+
+```text
+AREADEF GENERAL "General discussion" A Echo SQLite "bases/echo.sqlite3" . ()
+AREADEF NETMAIL "Private mail" 0 Net SQLite bases/mail.sqlite3 . ()
+```
+
+Each echo ID and type must match an area in the named database. Relative paths start at the configuration file. The configuration page in the manual describes the supported subset of classic `AREADEF` syntax.
 
 ## Development
 

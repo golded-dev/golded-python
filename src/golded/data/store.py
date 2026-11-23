@@ -1,4 +1,4 @@
-"""Message store ABC and open/create entry points; implementation in sqlite_store."""
+"""Message store ABC and open/create entry points."""
 
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
@@ -35,6 +35,12 @@ def open_message_store(path: str | Path) -> MessageStore:
     from golded.data.sqlite_store import open_message_store as open_store
 
     return open_store(path)
+
+
+def open_configured_store(path: str | Path) -> MessageStore:
+    from golded.data.configured_store import open_configured_store as open_store
+
+    return open_store(Path(path))
 
 
 def create_message_store(
