@@ -103,3 +103,51 @@ def test_lenient_partial_coverage_is_visible_in_area_list(tmp_path: Path) -> Non
             assert "JAM lenient: 1 recovered, 1 skipped, 1 stopped" in status
 
     run(check_status())
+
+
+@pytest.mark.parametrize(
+    ("global_mode", "area_mode", "recovers"),
+    [
+        (None, None, False),
+        ("lenient", None, True),
+        ("lenient", "strict", False),
+        ("strict", "lenient", True),
+    ],
+)
+def test_toml_jam_read_mode(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    global_mode: str | None,
+    area_mode: str | None,
+    recovers: bool,
+) -> None:
+    from unittest.mock import Mock
+
+    from golded import cli
+
+    legacy_jam(tmp_path / "archive")
+    config = tmp_path / "golded.toml"
+    jam = f'[jam]\nread_mode = "{global_mode}"\n' if global_mode else ""
+    override = f', read_mode = "{area_mode}"' if area_mode else ""
+    config.write_text(
+        jam + '[areas]\nARCHIVE = { description = "Archive", group = "0", '
+        f'type = "echo", format = "jam", path = "archive"{override} }}\n'
+    )
+    monkeypatch.setattr("sys.argv", ["golded", "--config", str(config)])
+    run = Mock()
+    monkeypatch.setattr(cli, "run", run)
+    if recovers:
+        cli.main()
+        store, _, _ = run.call_args.args
+        assert store.message("ARCHIVE", 1).subject == "Legacy"
+        assert (
+            store.read_status("ARCHIVE")
+            == "JAM lenient: 1 recovered, 0 skipped, 0 stopped"
+        )
+    else:
+        with pytest.raises(SystemExit) as error:
+            cli.main()
+        assert error.value.code == 1
+        assert "Subfield 2000 exceeds" in capsys.readouterr().err
+        run.assert_not_called()

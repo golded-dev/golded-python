@@ -33,7 +33,7 @@ class ConfiguredArea:
     kind: str
     format: str
     location: str
-    line: int
+    line: int | None = None
     lenient: bool = False
 
 
@@ -64,13 +64,8 @@ def load_area_config(path: Path) -> tuple[ConfiguredArea, ...]:
         if match is None:
             raise ValueError(f"{path}:{number}: malformed AREADEF")
         group = match["group"]
-        if not _GROUP.fullmatch(group):
-            raise ValueError(f"{path}:{number}: invalid group {group}")
         code = match["code"]
-        key = area_code_key(code)
-        if key in codes:
-            raise ValueError(f"{path}:{number}: duplicate area code {code}")
-        codes.add(key)
+        validate_area_identity(code, group, codes, f"{path}:{number}")
         areas.append(
             ConfiguredArea(
                 code=code,
@@ -99,3 +94,58 @@ def load_area_config(path: Path) -> tuple[ConfiguredArea, ...]:
         else area
         for area in areas
     )
+
+
+def validate_area_identity(code: str, group: str, codes: set[str], source: str) -> None:
+    if not re.fullmatch(r'[^\s";]+', code):
+        raise ValueError(f"{source}: invalid area code {code!r}")
+    if not _GROUP.fullmatch(group):
+        raise ValueError(f"{source}: invalid group {group}")
+    key = area_code_key(code)
+    if key in codes:
+        raise ValueError(f"{source}: duplicate area code {code}")
+    codes.add(key)
+
+
+def parse_toml_areas(areas: object, jam: object) -> tuple[ConfiguredArea, ...]:
+    if not isinstance(jam, dict):
+        raise ValueError("jam must be a table")
+    if not isinstance(areas, dict):
+        raise ValueError("areas must be a table")
+    default = _toml_read_mode(jam.get("read_mode", "strict"), "jam.read_mode")
+    codes: set[str] = set()
+    entries: list[ConfiguredArea] = []
+    for code, fields in areas.items():
+        source = f"areas[{code!r}]"
+        if not isinstance(fields, dict):
+            raise ValueError(f"{source} must be a table")
+        description, group, kind, format_name, location = (
+            _toml_area_field(fields, field, source)
+            for field in ("description", "group", "type", "format", "path")
+        )
+        validate_area_identity(code, group, codes, source)
+        is_jam = format_name.casefold() == "jam"
+        lenient = is_jam and default
+        if "read_mode" in fields:
+            if not is_jam:
+                raise ValueError(f"{source}.read_mode is only valid for JAM areas")
+            lenient = _toml_read_mode(fields["read_mode"], f"{source}.read_mode")
+        entries.append(
+            ConfiguredArea(
+                code, description, group, kind, format_name, location, lenient=lenient
+            )
+        )
+    return tuple(entries)
+
+
+def _toml_area_field(fields: dict[str, object], field: str, source: str) -> str:
+    value = fields.get(field)
+    if not isinstance(value, str) or (field != "description" and not value.strip()):
+        raise ValueError(f"{source}.{field} must be a string with a value")
+    return value
+
+
+def _toml_read_mode(value: object, source: str) -> bool:
+    if not isinstance(value, str) or value.lower() not in {"strict", "lenient"}:
+        raise ValueError(f"{source} must be strict or lenient, got {value!r}")
+    return value.lower() == "lenient"

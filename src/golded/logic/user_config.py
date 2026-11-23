@@ -5,6 +5,7 @@ from pathlib import Path
 
 from golded_ftn import FtnAddress
 
+from golded.data.area_config import ConfiguredArea, parse_toml_areas
 from golded.logic.tear_origin import DEFAULT_ORIGIN
 
 THEME_NAMES = ("dark", "light")
@@ -23,6 +24,7 @@ class UserConfig:
         theme: str = DEFAULT_THEME,
         threaded_list: bool = DEFAULT_THREADED_LIST,
         splash_seconds: int = DEFAULT_SPLASH_SECONDS,
+        areas: tuple[ConfiguredArea, ...] = (),
     ) -> None:
         self.from_name = from_name
         self.from_address = from_address
@@ -31,9 +33,10 @@ class UserConfig:
         self.theme = theme if theme in THEME_NAMES else DEFAULT_THEME
         self.threaded_list = bool(threaded_list)
         self.splash_seconds = splash_seconds
+        self.areas = areas
 
 
-def load_user_config(path: str | Path) -> UserConfig:
+def load_user_config(path: str | Path, *, load_areas: bool = True) -> UserConfig:
     config_path = Path(path)
 
     if not config_path.is_file():
@@ -77,4 +80,7 @@ def load_user_config(path: str | Path) -> UserConfig:
         theme=theme,
         threaded_list=threaded_list,
         splash_seconds=splash_seconds,
+        areas=parse_toml_areas(data.get("areas", {}), data.get("jam", {}))
+        if load_areas
+        else (),
     )

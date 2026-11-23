@@ -7,7 +7,7 @@ from pathlib import Path
 from golded_ftn import OutgoingMessage, ParsedMessage, ParserException
 
 from golded.data.area import Area
-from golded.data.area_config import area_code_key, load_area_config
+from golded.data.area_config import ConfiguredArea, area_code_key, load_area_config
 from golded.data.jam_store import JamMessageStore
 from golded.data.store import MessageStore, open_message_store
 
@@ -49,11 +49,17 @@ class ConfiguredMessageStore(MessageStore):
         route.store.delete(route.code, msgno)
 
 
-def open_configured_store(path: Path) -> ConfiguredMessageStore:
+def open_configured_store(
+    path: Path, *, entries: tuple[ConfiguredArea, ...] | None = None
+) -> ConfiguredMessageStore:
     routes: dict[str, AreaRoute] = {}
     stores: dict[Path, tuple[MessageStore, dict[str, Area]]] = {}
-    for entry in load_area_config(path):
-        source = f"{path}:{entry.line}"
+    for entry in load_area_config(path) if entries is None else entries:
+        source = (
+            f"{path}:{entry.line}"
+            if entry.line is not None
+            else f"{path}: areas[{entry.code!r}]"
+        )
         format_name = entry.format.casefold()
         if format_name not in {"sqlite", "jam"}:
             raise ValueError(
