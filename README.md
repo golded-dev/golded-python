@@ -1,6 +1,6 @@
 # golded
 
-A terminal message reader for FidoNet echomail and netmail stored in SQLite or JAM, modelled on GoldED. Built with Textual. Storage uses [`golded-ftn-sqlite`](https://pypi.org/project/golded-ftn-sqlite/) and [`golded-ftn-jam`](https://pypi.org/project/golded-ftn-jam/).
+A terminal message reader for FidoNet echomail and netmail stored in SQLite, JAM or MSG, modelled on GoldED. Built with Textual. Storage uses [`golded-ftn-sqlite`](https://pypi.org/project/golded-ftn-sqlite/), [`golded-ftn-jam`](https://pypi.org/project/golded-ftn-jam/) and [`golded-ftn-msg`](https://pypi.org/project/golded-ftn-msg/).
 
 The manual covers message bases, configuration, every key and each screen: <https://golded-dev.github.io/golded-python/>. Its source is in `site/`, built by `scripts/build_pages.py`.
 
@@ -39,7 +39,7 @@ splash_seconds = 10
 
 `--config`, `--database` and `--theme` override the file. A value golded cannot use stops it at startup with one line and exit status 1. The manual describes each field.
 
-For JAM bases or areas spread across several bases, add an `[areas]` table to
+For JAM or MSG bases, or areas spread across several bases, add an `[areas]` table to
 `golded.toml`. Quote area IDs containing dots. Each JAM area can override the
 global `[jam].read_mode`, which defaults to `strict`.
 
@@ -61,7 +61,7 @@ AREADEF NETMAIL "Private mail" 0 Net SQLite bases/mail.sqlite3 . ()
 AREADEF UNIX "UNIX discussion" A Echo JAM bases/UNIX . ()
 ```
 
-For SQLite, the echo ID and type must match an area in the named database. For JAM, specify the base filename without its extension. Relative paths start at the configuration file. The configuration page in the manual describes the supported subset of classic `AREADEF` syntax.
+For SQLite, the echo ID and type must match an area in the named database. For JAM, specify the base filename without its extension. For MSG, specify the directory containing the numbered message files. Relative paths start at the configuration file. The configuration page in the manual describes the supported subset of classic `AREADEF` syntax.
 
 ## Development
 

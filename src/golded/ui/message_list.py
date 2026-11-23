@@ -242,8 +242,11 @@ class MessageListScreen(ListScreen):
     def show_title(self) -> None:
         area_code = self.__session.selected_area()
         assert area_code is not None, "message list without a selected area"
+        name = self.__session.area_name(area_code)
+        if self.__session.readonly():
+            name = f"Read-only · {name}"
         title = area_title_line(
-            self.__session.area_name(area_code),
+            name,
             area_code,
             self.size.width,
             ged_color(self.app, "line"),

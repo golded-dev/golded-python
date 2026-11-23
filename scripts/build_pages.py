@@ -487,6 +487,11 @@ def config_page() -> str:
                         "Read <a href='#areadef'>AREADEF entries</a> instead of opening one base.",
                     ),
                     (
+                        "<code>--readonly</code>",
+                        "off",
+                        "Browse areas with new messages and replies disabled.",
+                    ),
+                    (
                         "<code>--theme NAME</code>",
                         "from config, else <code>dark</code>",
                         "<code>dark</code> or <code>light</code>",
@@ -514,7 +519,7 @@ def config_page() -> str:
             "<code>type</code>, <code>format</code> and <code>path</code>. "
             "Use a group of A–Z, 0 or #1–#999 as a quoted string. Use "
             "<code>echo</code> or <code>net</code> for the type, and "
-            "<code>jam</code> or <code>sqlite</code> for the format. "
+            "<code>jam</code>, <code>msg</code>, <code>opus</code> or <code>sqlite</code> for the format. "
             "Paths are relative to the TOML file unless absolute. "
             "The <a href='#areadef'>classic area rules</a> also apply to SQLite area "
             "matching, JAM base filenames and JAM writes.</p>"
@@ -534,7 +539,7 @@ def config_page() -> str:
             "04",
             "Classic area configuration",
             "<p>Run <code>golded --area-config golded.cfg</code> to list areas from "
-            "existing SQLite and JAM bases in configuration order. "
+            "existing SQLite, JAM and MSG bases in configuration order. "
             "This option replaces the TOML <code>database</code> setting and "
             "cannot be combined with <code>--database</code>. "
             "Keep identity, origin and display preferences in <code>golded.toml</code>.</p>"
@@ -572,6 +577,17 @@ def config_page() -> str:
             "status bar. A stopped traversal may show only part of the base. "
             "JAM writing still validates the entire base strictly. If that check "
             "fails, the composer shows the error and keeps the draft open.</p>"
+            "<p>For <code>MSG</code>, give the directory that holds the numbered "
+            "<code>.MSG</code> files, for example "
+            '<code>AREADEF NETMAIL "Netmail" A Net MSG bases/netmail</code>. '
+            "GoldED opens one classic FTSC area per directory, reads both uppercase and "
+            "lowercase file extensions, and writes uppercase extensions. "
+            "It uses CP850 for writes and for reads without a charset declaration. "
+            "The reply field can refer to message numbers up to 65535. "
+            "For Opus headers, use <code>Opus</code> in AREADEF or "
+            '<code>format = "opus"</code> in TOML. Opus timestamps use '
+            "two-second precision. It is safe to browse in <code>--readonly</code> mode. "
+            "Close the area in other programs before writing to it here.</p>"
             "<p>The optional classic tail <code>aka (attrs) [origin]</code> "
             "and group are accepted without applying area-specific settings. "
             "Semicolons outside quoted fields start comments. Other directives, "
